@@ -1,17 +1,21 @@
 #include <iostream>
 #include <fstream>
-#include "Booking.h"
 #include "List.h"
+#include "Dictionary.h"
 
 using namespace std;
 
 void RetrieveRoomData(List& roomList);
+void RetrieveBookingData(Dictionary& bookingData);
+tm convertStringToTM(string date);
 
 int main() {
 	List roomList;
+	Dictionary bookingData;
 
 	//Retreive Rooms Data
 	RetrieveRoomData(roomList);
+	RetrieveBookingData(bookingData);
 
 	int option = -1;
 	while (option != 0) {
@@ -81,8 +85,78 @@ void RetrieveRoomData(List& roomList) {
 
 		int roomNo = stoi(roomNum.substr(5, 8));
 		int costPerNight = stoi(cost);
-		
 		roomList.add(Room(roomNo, roomType, costPerNight));
 	}
+}
+
+void RetrieveBookingData(Dictionary& bookingData) {
+	fstream file;
+	file.open("Bookings.csv");
+
+	string bookID;
+	string bookDate = "";
+	string guestName;
+	string roomNum;
+	string roomType;
+	string status;
+	string checkIn;
+	string checkOut;
+	string guestNo;
+	string specialRequest;
+
+	//Skips first line, header row
+	getline(file, roomNum);
+
+	while (file.good()) {
+		getline(file, bookID, ',');
+
+		//read finish empty row
+		if (bookID._Equal(""))
+			break;
+
+		getline(file, bookDate, ',');
+		getline(file, guestName, ',');
+		getline(file, roomNum, ',');
+		getline(file, roomType, ',');
+		getline(file, status, ',');
+		getline(file, checkIn, ',');
+		getline(file, checkOut, ',');
+		getline(file, guestNo, ',');
+		getline(file, specialRequest, '\n');
+
+		int bookingID = stoi(bookID);   
+		tm bookingDate = convertStringToTM(bookDate);
+		
+		int roomNo = -1;
+		if (!roomNum._Equal(" ") && !roomNum._Equal("") && !roomNum.empty() && roomNum.size() != 0) {
+			roomNo = stoi(roomNum.substr(5, 8));
+		}
+
+		int statusCode;
+		if (status == "Checked Out")
+			statusCode = 0;
+		else if (status == "Checked In")
+			statusCode = 1;
+		else
+			statusCode = 2;
+		tm checkInDate = convertStringToTM(checkIn);
+		tm checkOutDate = convertStringToTM(checkOut);
+		int guestAmt = stoi(guestNo);
+
+		bookingData.add(guestName,Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+		cout << endl;
+	}
+
+}
+
+tm convertStringToTM(string date) {
+	tm result;
+
+	char arr[17];
+	strcpy_s(arr, 17, date.c_str());
+
+	sscanf_s(arr, "%d/%d/%4d  %d:%d:%d",
+		&result.tm_mday, &result.tm_mon, &result.tm_year, &result.tm_hour, &result.tm_min, &result.tm_sec);
+	return result;
 }
 

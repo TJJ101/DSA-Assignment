@@ -27,8 +27,25 @@ Dictionary::~Dictionary(){
 }
 
 
-int Dictionary::hash(KeyType key){
-	return key % MAX_SIZE;
+int charvalue(char c) {
+	if (isalpha(c)) {
+		if (isupper(c))
+			return (int)c - (int)'A';
+		else
+			return (int)c - (int)'a' + 26;
+	}
+	else
+		return -1;
+}
+
+
+int Dictionary::hash(KeyType key) {
+	int total = charvalue(key[0]);
+	for (int i = 1; i < key.size(); i++) {
+		total = total * 52 + charvalue(key[i]);
+		total %= MAX_SIZE;
+	}
+	return total;
 }
 
 // add a new item with the specified key to the Dictionary
@@ -42,21 +59,67 @@ bool Dictionary::add(KeyType newKey, ItemType2 newItem){
 		newNode->item = newItem;
 		newNode->key = newKey;
 		newNode->next = NULL;
+		newNode->altNode = NULL;
 
 		items[index] = newNode;
 	}
 	else {
 		Node* current = items[index];
 		if (current->key == newKey) {
-			return false;
+			current = current->altNode;
+			if (current == NULL) {
+				Node* newNode = new Node();
+				newNode->item = newItem;
+				newNode->key = newKey;
+				newNode->next = NULL;
+				newNode->altNode = NULL;
+				current = newNode;
+				size++;
+				return true;
+			}
+			else {
+				while (current->next != NULL) {
+					current = current->next;
+				}
+				Node* newNode = new Node();
+				newNode->item = newItem;
+				newNode->key = newKey;
+				newNode->next = NULL;
+				current->next = newNode;
+				size++;
+				return true;
+			}
 		}
 		while (current->next != NULL)
 		{
 			current = current->next;
 			if (current->key == newKey) {
-				return false;
+				current = current->altNode;
+				if (current == NULL) {
+					Node* newNode = new Node();
+					newNode->item = newItem;
+					newNode->key = newKey;
+					newNode->next = NULL;
+					newNode->altNode = NULL;
+					current = newNode;
+					size++;
+					return true;
+				}
+				else {
+					while (current->next != NULL) {
+						current = current->next;
+					}
+					Node* newNode = new Node();
+					newNode->item = newItem;
+					newNode->key = newKey;
+					newNode->next = NULL;
+					current->next = newNode;
+					size++;
+					return true;
+				}
 			}
 		}
+
 		Node* newNode = new Node();
 		newNode->item = newItem;
 		newNode->key = newKey;

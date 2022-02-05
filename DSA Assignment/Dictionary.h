@@ -7,7 +7,7 @@
 using namespace std;
 
 const int MAX_SIZE = 127;
-typedef int KeyType;
+typedef string KeyType;
 typedef Booking ItemType2;
 
 
@@ -19,6 +19,7 @@ private:
 		KeyType	 key;   // search key
 		ItemType2 item;	// data item
 		Node     *next;	// pointer pointing to next item with same search key
+		Node* altNode; // when same person has multiple booking
 	};
 
 	Node *items[MAX_SIZE];
