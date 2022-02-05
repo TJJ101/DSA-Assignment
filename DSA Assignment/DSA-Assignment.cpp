@@ -144,8 +144,9 @@ void RetrieveBookingData(Dictionary& bookingData) {
 		int guestAmt = stoi(guestNo);
 
 		bookingData.add(guestName,Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
-		cout << endl;
 	}
+
+	cout << bookingData.getLength() << endl;
 
 }
 
