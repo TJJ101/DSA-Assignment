@@ -35,7 +35,7 @@ int Dictionary::hash(KeyType key){
 // pre : none
 // post: new item is added to the Dictionary
 //       size of Dictionary is increased by 1
-bool Dictionary::add(KeyType newKey, ItemType newItem){
+bool Dictionary::add(KeyType newKey, ItemType2 newItem){
 	int index = hash(newKey);
 	if (items[index] == NULL) {
 		Node *newNode = new Node();
@@ -115,7 +115,7 @@ void Dictionary::remove(KeyType key){
 // pre : key must exist in the dictionary
 // post: none
 // return the item with the specified key from the Dictionary
-ItemType Dictionary::get(KeyType key) {
+ItemType2 Dictionary::get(KeyType key) {
 	int index = hash(key);
 	if (items[index] != NULL) {
 		Node* currentNode = items[index];
@@ -174,6 +174,6 @@ void Dictionary::print(){
 	}
 }
 
-// void Dictionary::replace(KeyType key, ItemType item){}
+// void Dictionary::replace(KeyType key, ItemType2 item){}
 // bool Dictionary::contains(KeyType key){}
 
