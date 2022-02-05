@@ -10,6 +10,7 @@ private:
 	int costPerNight;
 
 public:
+	Room();
 	Room(int roomNum, string type, int cost);
 	int getRoomNo();
 	string getRoomType();
