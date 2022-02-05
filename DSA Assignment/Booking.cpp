@@ -1,5 +1,6 @@
 #include "Booking.h"
 
+Booking::Booking() {}
 Booking::Booking(int id, tm bookDate, string name, int rmNo, string rmType, int statusCode, tm checkIn, tm checkout,
 	int guestNo, string spReq) {
 	bookingID = id;
@@ -14,42 +15,42 @@ Booking::Booking(int id, tm bookDate, string name, int rmNo, string rmType, int 
 	spRequest = spReq;
 }
 
-int	Booking::getID() { return this->bookingID; }
+int	Booking::getID() { return bookingID; }
 
-void Booking::setID(int id) { this->bookingID = id;}
+void Booking::setID(int id) { bookingID = id;}
 
 tm Booking::getBookingDate() { return bookingDate; }
 
-void Booking::setBookingDate(tm bookingDate) { this->bookingDate = bookingDate; }
+void Booking::setBookingDate(tm bookingDate) { bookingDate = bookingDate; }
 
-string Booking::getGuestName() { return this->guestName; }
+string Booking::getGuestName() { return guestName; }
 
-void Booking::setGuestName(string name) { this->guestName = name; }
+void Booking::setGuestName(string name) { guestName = name; }
 
-int	Booking::getRoomNo() { return this->roomNo; }
+int	Booking::getRoomNo() { return roomNo; }
 
-void Booking::setRoomNo(int num) { this->roomNo = num; }
+void Booking::setRoomNo(int num) { roomNo = num; }
 
-string Booking::getRoomType() { return this->roomType; }
+string Booking::getRoomType() { return roomType; }
 
-void Booking::setRoomType(string type) { this->roomType = type; }
+void Booking::setRoomType(string type) { roomType = type; }
 
-int Booking::getStatus() { return this->status; }
+int Booking::getStatus() { return status; }
 
-void Booking::setStatus(int status) { this->status = status; }
+void Booking::setStatus(int status) { status = status; }
 
-tm Booking::getCheckInDate() { return this->checkInDate; }
+tm Booking::getCheckInDate() { return checkInDate; }
 
-void Booking::setCheckInDate(tm date) { this->checkInDate = date; }
+void Booking::setCheckInDate(tm date) { checkInDate = date; }
 
-tm Booking::getCheckOutDate() { return this->checkOutDate; }
+tm Booking::getCheckOutDate() { return checkOutDate; }
 
-void Booking::setCheckOutDate(tm date) { this->checkOutDate = date; }
+void Booking::setCheckOutDate(tm date) { checkOutDate = date; }
 
-int Booking::getNumofGuest() { return this->numOfGuest; }
+int Booking::getNumofGuest() { return numOfGuest; }
 
-void Booking::setNumOfGuest(int num) { this->numOfGuest = num; }
+void Booking::setNumOfGuest(int num) { numOfGuest = num; }
 
-string Booking::getSpecialRequest() { return this->spRequest; }
+string Booking::getSpecialRequest() { return spRequest; }
 
-void Booking::setSpecialRequest(string req) { this->spRequest = req; }
+void Booking::setSpecialRequest(string req) { spRequest = req; }

@@ -19,6 +19,7 @@ private:
 	string spRequest;
 
 public:
+	Booking();
 	Booking(int id, tm bookDate, string name, int roomNo, string rmType, int status, tm checkIn, tm checkout,
 		int guestNo, string spReq);
 	int getID();
