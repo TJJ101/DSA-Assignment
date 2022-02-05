@@ -1,8 +1,18 @@
 #include <iostream>
+#include <fstream>
+#include "Booking.h"
+#include "List.h"
 
 using namespace std;
 
+void RetrieveRoomData(List& roomList);
+
 int main() {
+	List roomList;
+
+	//Retreive Rooms Data
+	RetrieveRoomData(roomList);
+
 	int option = -1;
 	while (option != 0) {
 		cout << "\n==================================MENU=====================================" << endl;
@@ -46,8 +56,33 @@ int main() {
 			//Change time for simulation
 			break;
 		}
+	}
+}
 
+void RetrieveRoomData(List& roomList) {
+	fstream file;
+	file.open("Rooms.csv");
+
+	string roomNum;
+	string roomType;
+	string cost;
+	//Skips first line, header row
+	getline(file, roomNum);
+
+	while (file.good()) {
+		getline(file, roomNum, ',');
+
+		//no more rows
+		if (roomNum._Equal(""))
+			break;
 		
+		getline(file, roomType, ',');
+		getline(file, cost, '\n');
+
+		int roomNo = stoi(roomNum.substr(5, 8));
+		int costPerNight = stoi(cost);
+		
+		roomList.add(Room(roomNo, roomType, costPerNight));
 	}
 }
 
