@@ -107,7 +107,7 @@ void List::print(){
 	while (temp->next != NULL)
 	{
 		item = temp->item;
-		cout << item << endl;
+		cout << item.getRoomType() << endl;
 		temp = temp->next;
 	}
 }

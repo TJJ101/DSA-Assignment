@@ -6,7 +6,7 @@
 
 using namespace std;
 
-typedef string ItemType;
+typedef Room ItemType;
 
 class List
 {
