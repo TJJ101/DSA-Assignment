@@ -104,10 +104,12 @@ int List::getLength(){
 void List::print(){
 	Node* temp = firstNode;
 	ItemType item;
-	while (temp->next != NULL)
+	while (temp != NULL)
 	{
 		item = temp->item;
-		cout << item.getRoomType() << endl;
+		cout << item.getRoomNo() << " ";
+		cout << item.getRoomType() << " ";
+		cout << item.getCostPerNight() << endl;
 		temp = temp->next;
 	}
 }

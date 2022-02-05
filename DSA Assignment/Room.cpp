@@ -1,5 +1,7 @@
 #include "Room.h"
 
+Room::Room() {}
+
 Room::Room(int roomNum, string type, int cost){
 	roomNo = roomNum;
 	roomType = type;
