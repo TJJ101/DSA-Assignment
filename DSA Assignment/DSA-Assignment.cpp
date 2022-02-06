@@ -245,13 +245,16 @@ int main() {
 					cout << temp.getGuestName() << "       ";
 					if (temp.getRoomNo() == -1)
 					{
-						cout << "-       ";
+						cout << "       ";
 					}
 					else
 					{
 						cout << "Room " << temp.getRoomNo() << "       ";
 					}
 					cout << temp.getRoomType() << "       ";
+					if (temp.getStatus() == 0) { cout << "Checked Out       \n"; }
+					else if (temp.getStatus() == 1) { cout << "Checked In       \n"; }
+					else if (temp.getStatus() == 2) { cout << "Booked       \n"; }
 					cout << temp.getStatus() << "       ";
 					cout << temp.getCheckInDate().tm_mday << "/" << temp.getCheckInDate().tm_mon << "/" << temp.getCheckInDate().tm_year << "       ";
 					cout << temp.getCheckOutDate().tm_mday << "/" << temp.getCheckOutDate().tm_mon << "/" << temp.getCheckOutDate().tm_year << "       ";
@@ -373,11 +376,11 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 		bookingData.add(guestName,Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		
 		// Done by Tan Jun Jie
-		// Add those with status "Booked" into queue
 		if (statusCode == 0)
 		{
 			bookedOutStack.push(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		}
+		// Add those with status "Booked" into queue
 		else if (statusCode == 2) 
 		{
 			bookingQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
