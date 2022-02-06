@@ -6,6 +6,7 @@
 #include <fstream>
 #include <cTime>
 #include <chrono>
+#include <format>
 #include "List.h"
 #include "Dictionary.h"
 #include "Queue.h"
@@ -20,6 +21,8 @@ tm convertStringToTM(string date);
 bool BookingQueueExist(Queue bookingQueue, Booking data);
 void getCurrentDateTime(tm& dateTime);
 void AddBooking(Dictionary& bookingData);
+void AddToBookingCSV(Booking& booking);
+void TmToString(string& date, tm tmDate);
 
 int main() {
 	List roomList;
@@ -242,7 +245,7 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 		}
 	}
 
-	cout << bookingData.getLength() << endl;
+	file.close();
 
 }
 
@@ -263,9 +266,8 @@ void AddBooking(Dictionary& bookingData) {
 	while (true) {
 		// get Guest name
 		cout << "\nPlease enter your name or enter 0 to exit: ";
-		getline(cin, input);
 		cin.ignore();
-		cout << input << endl;
+		getline(cin, input);
 		if (input == "0")
 			break;
 		string guestName = input;
@@ -278,7 +280,7 @@ void AddBooking(Dictionary& bookingData) {
 			cout << "[2] Deluxe City View" << endl;
 			cout << "[3] Executive Sea View" << endl;
 			cout << "[4] President Suite" << endl;
-			cout << "Please choose your room type or enter 0 to exit: ";
+			cout << "\nPlease choose your room type or enter 0 to exit: ";
 			cin >> input;
 			switch (stoi(input)) {
 			default:
@@ -323,19 +325,29 @@ void AddBooking(Dictionary& bookingData) {
 		
 		// get guest amount
 		int guestAmt;
-		cout << "Enter Check out Date to (e.g. 30/1/2002) or enter 0 to exit: ";
+		cout << "Enter amount of guest: ";
 		if (input._Equal("0"))
 			return;
 		cin >> input;
 		guestAmt = stoi(input);
 		
 		cout << "Enter any special request you have or leave it blank or enter 0 to exit: ";
+		cin.ignore();
+		getline(cin, input);
 		if (input._Equal("0"))
 			return;
-		cin >> input;
+		
+
 
 		//creating new booking object
-		Booking booking = Booking();
+		Booking booking;
+
+		tm tmDate;
+		getCurrentDateTime(tmDate);
+
+		booking.setNumOfGuest(guestAmt);
+		booking.setBookingDate(tmDate);
+		booking.setID(bookingData.getLength() + 1);
 		booking.setGuestName(guestName);
 		booking.setRoomType(roomType);
 		booking.setStatus(2);
@@ -343,9 +355,14 @@ void AddBooking(Dictionary& bookingData) {
 		booking.setCheckOutDate(checkOutdateInput);
 		booking.setSpecialRequest(input);
 		bookingData.add(booking.getGuestName(),booking);
-		cout << bookingData.getLength() << endl;
+		AddToBookingCSV(booking);
+
+		cout << "\nSuccesfully booked" << endl;
+		break;
+		return;
 	}
 }
+
 bool BookingQueueExist(Queue bookingQueue, Booking data)
 {
 	Booking temp;
@@ -367,4 +384,27 @@ void getCurrentDateTime(tm& tmDate) {
 	tmDate.tm_mon += 1;
 	tmDate.tm_year += 1900;
 }
+
+void AddToBookingCSV(Booking& booking) {
+	fstream file("Bookings.csv", ios::app);
+	tm nowTime;
+	getCurrentDateTime(nowTime);
+
+	string bookingDate = to_string(nowTime.tm_mday) + "/" + to_string(nowTime.tm_mon) +
+		"/" + to_string(nowTime.tm_year) + " " + to_string(nowTime.tm_hour) + ":" +
+		to_string(nowTime.tm_min);
+	string checkInDate, checkOutDate;
+	TmToString(checkInDate, booking.getCheckInDate());
+	TmToString(checkOutDate, booking.getCheckOutDate());
+	file << booking.getID() << "," + bookingDate + "," + booking.getGuestName() + ",," + booking.getRoomType()
+		+ "," + "Booked," + checkInDate + "," + checkOutDate + "," + to_string(booking.getNumofGuest()) + ","
+		+ booking.getSpecialRequest() << endl;
+
+	file.close();
+}
+
+void TmToString(string& date, tm tmDate) {
+	date = to_string(tmDate.tm_mday) + "/" + to_string(tmDate.tm_mon) + "/" + to_string(tmDate.tm_year);
+}
+
 
