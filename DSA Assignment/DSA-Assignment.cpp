@@ -91,7 +91,7 @@ int main() {
 						cout << "--------------------------------------------------------------------------------------\n";
 						for (int i = 0; i < bookDupList.getLength(); i++)
 						{
-							cout << i << "   " << bookDupList.get(i).getRoomType() << "         " << bookDupList.get(i).getCheckInDate().tm_mday << "/"
+							cout << i+1 << "   " << bookDupList.get(i).getRoomType() << "         " << bookDupList.get(i).getCheckInDate().tm_mday << "/"
 								<< bookDupList.get(i).getCheckInDate().tm_mon << "/" << bookDupList.get(i).getCheckInDate().tm_year << "         "
 								<< bookDupList.get(i).getCheckOutDate().tm_mday << "/" << bookDupList.get(i).getCheckOutDate().tm_mon << "/"
 								<< bookDupList.get(i).getCheckOutDate().tm_year << "         " << bookDupList.get(i).getNumofGuest() << "         "
