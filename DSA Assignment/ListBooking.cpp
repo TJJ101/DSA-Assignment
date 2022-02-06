@@ -75,7 +75,7 @@ void ListBooking::remove(int index) {
 		size--;
 	}
 	else {
-		cout << "ListBooking is empty!" << endl;
+		//cout << "ListBooking is empty!" << endl;
 	}
 }
 

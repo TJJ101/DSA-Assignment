@@ -26,6 +26,7 @@ void TmToString(string& date, tm tmDate);
 
 int main() {
 	List roomList;
+	ListBooking bookDupList = ListBooking();
 	Dictionary bookingData;
 	Stack bookedOutStack;
 	Queue bookingQueue;
@@ -40,6 +41,10 @@ int main() {
 	//----------------------------------------------------
 	bookingQueue.displayItems();
 	cout << "\n\n";
+
+	Booking data;
+	bookingQueue.getFront(data);
+	cout << data.getGuestName() << "\n\n";
 
 	int option = -1;
 	while (option != 0) {
@@ -69,34 +74,52 @@ int main() {
 		{
 			string name;
 			cout << "Enter a name: ";
+			cin.clear();
 			cin.ignore();
 			getline(cin, name);
-			if (!name.empty()) {
-				Booking booking = bookingData.get(name);
-				cout << BookingQueueExist(bookingQueue, booking) << endl;
-				if (booking.getGuestName() != name)
+			Booking booking = bookingData.get(name);
+			if (booking.getGuestName() == name) 
+			{
+				bookingData.GetBookedBookingsByName(name, bookDupList);
+				if (bookDupList.getLength() > 0) 
 				{
-					cout << name << " currently has no booking.\n";
-					break;
-				}
-				else if (BookingQueueExist(bookingQueue, booking) != true)
-				{
-					cout << name << " currently has no booking.\n";
-					break;
+					if (bookDupList.getLength() > 1)
+					{
+					cout << name << " currently has " << bookDupList.getLength() << " bookings.\n";
+					}
+					else
+					{
+						Booking booking = bookDupList.get(0);
+						if (booking.getStatus() == 2)
+						{
+							tm checkin = booking.getCheckInDate();
+							tm checkout = booking.getCheckOutDate();
+							cout << "Guest Name: " << booking.getGuestName() << endl;
+							cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
+							cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon << "/" << checkout.tm_year << endl;
+						}
+						else if (booking.getStatus() == 2)
+						{
+							cout << name << " currently has no booking.\n";
+							break;
+						}
+					}
 				}
 				else
 				{
-					tm checkin = booking.getCheckInDate();
-					tm checkout = booking.getCheckOutDate();
-					cout << "Guest Name: " << booking.getGuestName() << endl;
-					cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
-					cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon<< "/" << checkout.tm_year << endl;
+					cout << name << " currently has no booking.\n";
 				}
-				
 			}
 			else
 			{
-				cout << "Invalid Input\n";
+				cout << name << " currently has no booking.\n";
+				break;
+			}
+
+			// CLear the Booking Duplicate List
+			for (int i = 0; i < bookDupList.getLength(); i++)
+			{
+				bookDupList.remove(i);
 			}
 			break;
 		}
@@ -188,6 +211,8 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 	string checkOut;
 	string guestNo;
 	string specialRequest;
+	Queue tempQ;
+	Stack tempS;
 
 	//Skips first line, header row
 	getline(file, roomNum);
