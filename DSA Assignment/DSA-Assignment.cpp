@@ -17,7 +17,7 @@ using namespace std;
 using namespace std::chrono;
 
 void RetrieveRoomData(List& roomList);
-void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
+void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
 tm convertStringToTM(string date);
 bool BookingQueueExist(Queue bookingQueue, Booking data);
 void getCurrentDateTime(tm& dateTime);
@@ -28,12 +28,12 @@ void TmToString(string& date, tm tmDate);
 int main() {
 	List roomList;
 	Dictionary bookingData;
-	Stack bookedOutStack;
+	Stack checkedOutStack;
 	Queue bookingQueue;
 	Queue checkInQueue;
 	//Retreive Rooms Data
 	RetrieveRoomData(roomList);
-	RetrieveBookingData(bookingData, bookedOutStack, bookingQueue, checkInQueue);
+	RetrieveBookingData(bookingData, checkedOutStack, bookingQueue, checkInQueue);
 
 	// to set current date----------------------------------
 	tm currentDate;
@@ -210,12 +210,19 @@ int main() {
 			tempDateInput->tm_sec = 0;
 			
 			Queue tempQ = Queue();
+			Stack tempStack = Stack();
 
-			cout << "Booking Date       Guest Name       Room #       Room Type        Check in       Check out       Guests #       Special Requests\n";
+			cout << "\nBooking Date       Guest Name       Room #       Room Type        Check in       Check out       Guests #       Special Requests\n";
 			cout << "------------------------------------------------------------------------------------------------------------------------------------\n";
+			while (!checkedOutStack.isEmpty())
+			{
+				Booking temp = Booking();
+
+
+			}
 			while (!checkInQueue.isEmpty())
 			{
-				Booking temp;
+				Booking temp = Booking();
 				checkInQueue.dequeue(temp);
 				struct tm temCheckInDate = temp.getCheckInDate();
 				struct tm temCheckOutDate = temp.getCheckOutDate();
@@ -260,7 +267,15 @@ int main() {
 					cout << temp.getCheckOutDate().tm_mday << "/" << temp.getCheckOutDate().tm_mon << "/" << temp.getCheckOutDate().tm_year << "       ";
 					cout << temp.getNumofGuest() << "       ";
 					cout << temp.getSpecialRequest() << "       \n";
+					tempQ.enqueue(temp);
 				}
+			}
+			
+			while (!tempQ.isEmpty())
+			{
+				Booking temp = Booking();
+				tempQ.dequeue(temp);
+				checkInQueue.enqueue(temp);
 			}
 			
 			break;
@@ -317,7 +332,7 @@ void RetrieveRoomData(List& roomList) {
 }
 
 // Done by Chow Yun Cong
-void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
+void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
 	fstream file;
 	file.open("Bookings.csv");
 
@@ -378,7 +393,7 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 		// Done by Tan Jun Jie
 		if (statusCode == 0)
 		{
-			bookedOutStack.push(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+			checkedOutStack.push(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		}
 		// Add those with status "Booked" into queue
 		else if (statusCode == 2) 
