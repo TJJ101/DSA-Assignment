@@ -55,7 +55,8 @@ public:
 	// return the item in the specified index of the list
 	ItemType get(int index);
 
-	// check if the list is empty
+	// check if the 
+	// 
 	// pre : none
 	// post: none
 	// return true if the list is empty; otherwise returns false

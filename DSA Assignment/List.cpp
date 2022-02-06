@@ -76,7 +76,7 @@ void List::remove(int index){
 		size--;
 	}
 	else {
-		cout << "List is empty!" << endl;
+		//cout << "List is empty!" << endl;
 	}
 }
 

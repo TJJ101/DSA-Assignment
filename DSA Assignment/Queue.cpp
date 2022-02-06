@@ -24,11 +24,13 @@ bool Queue::enqueue(ItemType3 item)
 		backNode = temp;
 	}
 	else
+	{
 		// set back node's next pointer to point to new node
 		backNode->next = temp;
+		// set back node (pointer) to point to new node
+		backNode = temp;
+	}
 
-	// set back node (pointer) to point to new node
-	backNode = temp;
 	return true;
 }
 
@@ -57,12 +59,14 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 		tempCheckInDate->tm_hour = 0;
 		tempCheckInDate->tm_min = 0;
 		tempCheckInDate->tm_sec = 0;
+		tempCheckInDate->tm_isdst = -1;
 
 		tempInputtedDate->tm_year -= 1900;
 		tempInputtedDate->tm_mon -= 1;
 		tempInputtedDate->tm_hour = 0;
 		tempInputtedDate->tm_min = 0;
 		tempInputtedDate->tm_sec = 0;
+		tempInputtedDate->tm_isdst = -1;
 
 		time_t tCheckInDate = mktime(tempCheckInDate);
 		time_t tInputtedDate = mktime(tempInputtedDate);
@@ -85,14 +89,19 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 				tempCHECKDATE->tm_hour = 0;
 				tempCHECKDATE->tm_min = 0;
 				tempCHECKDATE->tm_sec = 0;
+				tempCHECKDATE->tm_isdst = -1;
 
 				time_t tCHECKDATE = mktime(tempCHECKDATE);
-				if (difftime(tCHECKDATE, tInputtedDate) <= 0) { tempQ.enqueue(data); }
-				if (difftime(tInputtedDate, tCheckInDate) < 0 && inserted == false) {
+
+				cout << "date of front of queue: " << temCHECKDATE.tm_mday << "/" << temCHECKDATE.tm_mon << "/" << temCHECKDATE.tm_year << "   ||  " << tInputtedDate <<endl;
+				cout << "date to insert: " << temInputtedDate.tm_mday << "/" << temInputtedDate.tm_mon << "/" << temInputtedDate.tm_year << "   ||   " << tCHECKDATE << endl;
+				cout << "date to insert - date of front of queue:  " << difftime(tInputtedDate, tCheckInDate) << endl;
+				cout << "date of front of queue - date to insert:  " << difftime(tCheckInDate, tInputtedDate) << endl;
+				//if (difftime(tCHECKDATE, tInputtedDate) <= 0) { tempQ.enqueue(data); }
+				if (difftime(tCHECKDATE, tInputtedDate) >= 0 && inserted == false) {
 					tempQ.enqueue(data);
 					inserted = true;
 				}
-				Booking temp2;
 				dequeue(temp2);
 				tempQ.enqueue(temp2);
 			}
@@ -101,51 +110,6 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 				Booking temp2 = Booking();
 				tempQ.dequeue(temp2);
 				enqueue(temp2);
-				/*
-				Booking temp2 = Booking();
-				struct tm temCHECKDATE = tempQ.frontNode->item.getCheckInDate();
-				tm* tempCHECKDATE = &temCHECKDATE;
-
-				tempCHECKDATE->tm_year -= 1900;
-				tempCHECKDATE->tm_mon -= 1;
-				tempCHECKDATE->tm_hour = 0;
-				tempCHECKDATE->tm_min = 0;
-				tempCHECKDATE->tm_sec = 0;
-
-				time_t tCHECKDATE = mktime(tempCHECKDATE);
-				if (difftime(tCHECKDATE, tInputtedDate) >= 0) { enqueue(temp->item);}
-				tempQ.dequeue(temp2);
-				enqueue(temp2);
-				*/
-				/*
-				if (isEmpty())
-				{
-					enqueue(temp2);
-				}
-				else
-				{
-					struct tm temCheckInDate = temp2.getCheckInDate();
-					tm* tempCheckInDate = &(temCheckInDate);
-
-					tempCheckInDate->tm_year -= 1900;
-					tempCheckInDate->tm_mon -= 1;
-					tempCheckInDate->tm_hour = 0;
-					tempCheckInDate->tm_min = 0;
-					tempCheckInDate->tm_sec = 0;
-
-					time_t tCheckInDate = mktime(tempCheckInDate);
-					time_t tInputtedDate = mktime(tempInputtedDate);
-
-					if (difftime(tCheckInDate, tInputtedDate) < 0)
-					{
-						enqueue(temp2);
-					}
-					else
-					{
-
-					}
-				}
-				*/
 			}
 
 		}

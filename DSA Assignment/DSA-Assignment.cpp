@@ -47,10 +47,6 @@ int main() {
 		string cDate = "";
 		TmToString(cDate, currentDate);
 
-		checkInQueue.displayItems();
-		cout << "\n\n\n\n";
-
-
 		//checkout any person in checkin list if current day is passed the checkout date
 		CheckOut(checkInQueue, currentDate, bookingData);
 
@@ -78,8 +74,9 @@ int main() {
 			break;
 
 		case 1:
-			//Check in a guest using the booking information  
 		{
+			//Done by Tan Jun Jie S10194152D
+			//Check in a guest using the booking information  
 			string name;
 			cout << "Enter a name: ";
 			cin.clear();
@@ -136,6 +133,9 @@ int main() {
 
 						tempCurrentDate->tm_year -= 1900;
 						tempCurrentDate->tm_mon -= 1;
+						tempCurrentDate->tm_hour = 0;
+						tempCurrentDate->tm_min = 0;
+						tempCurrentDate->tm_sec = 0;
 
 						time_t tCheckInDate = mktime(tempCheckInDate);
 						time_t tCheckOutDate = mktime(tempCheckOutDate);
@@ -167,6 +167,7 @@ int main() {
 											tempRoom.remove(i);
 										}
 									}
+									tempQ.enqueue(temp);
 								}
 								while (!tempQ.isEmpty())
 								{
@@ -179,8 +180,12 @@ int main() {
 									data.setStatus(1);
 									data.setRoomNo(tempRoom.get(0).getRoomNo());
 									bool check = bookingData.ChangeValueOfBooking(data.getGuestName(), data);
-									checkInQueue.enqueue(data);
-									if (check) { cout << "Check in successful!\n\n"; }
+									if (check) 
+									{ 
+										//checkInQueue.enqueue(data);
+										checkInQueue.enqueueCheckIn(data);
+										cout << "Check in successful!\n\n"; 
+									}
 									else { cout << "Check in failed!\n\n"; }
 									cout << "=======================================================CHECK IN LIST======================================================\n";
 									checkInQueue.displayItems();
@@ -218,8 +223,6 @@ int main() {
 				cout << name << " currently has no booking.\n";
 				break;
 			}
-
-			// CLear the Booking Duplicate List
 			break;
 		}
 		case 2:
@@ -663,6 +666,8 @@ void TmToString(string& date, tm tmDate) {
 }
 
 
+//Done by Tan Jun Jie
+// Checks current date and checks out those whose check out date passes
 void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData)
 {
 	Queue tempQ = Queue();
