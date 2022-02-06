@@ -95,18 +95,19 @@ bool Dictionary::add(KeyType newKey, ItemType2 newItem){
 		{
 			current = current->next;
 			if (current->key == newKey) {
-				current = current->altNode;
-				if (current == NULL) {
+				// checks alternate node
+				if (current->altNode == NULL) {
 					Node* newNode = new Node();
 					newNode->item = newItem;
 					newNode->key = newKey;
 					newNode->next = NULL;
 					newNode->altNode = NULL;
-					current = newNode;
+					current->altNode = newNode;
 					size++;
 					return true;
 				}
 				else {
+					current = current->altNode;
 					while (current->next != NULL) {
 						current = current->next;
 					}
@@ -114,6 +115,7 @@ bool Dictionary::add(KeyType newKey, ItemType2 newItem){
 					newNode->item = newItem;
 					newNode->key = newKey;
 					newNode->next = NULL;
+					newNode->altNode = NULL;
 					current->next = newNode;
 					size++;
 					return true;
