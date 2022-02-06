@@ -368,33 +368,39 @@ bool Dictionary::ChangeValueOfBooking(string key, Booking booking) {
 
 //params int monthNo, bookingList to append data to
 //Gets all the occupied rooms in a particular month
-void Dictionary::GetAllOccupiedRoomByMonth(int monthNo, ListBooking& bookingList) {
+void Dictionary::GetAllOccupiedRoomByMonth(int monthNo,int yearNo, ListBooking& bookingList) {
 	for (int i = 0; i < MAX_SIZE; i++) {
 		Node* currentNode = items[i];
 		if (currentNode != NULL) {
 			//checking for 1st node 
-			if (currentNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(currentNode->item); }
+			if ( currentNode->item.getCheckInDate().tm_year == yearNo 
+				&& currentNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(currentNode->item); }
 			//checking if node has other bookings
 			if (currentNode->altNode != NULL) {
 				Node* altNode = currentNode->altNode;
-				if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+				if ( altNode->item.getCheckInDate().tm_year == yearNo
+					&& altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
 				while (altNode->next != NULL) {
 					altNode = altNode->next;
-					if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+					if (altNode->item.getCheckInDate().tm_year == yearNo 
+						&& altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
 				}
 			}
 			// resets currentNode to first in index
 			//checking other node
 			while (currentNode->next != NULL) {
 				currentNode = currentNode->next;
-				if (currentNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(currentNode->item); }
+				if (currentNode->item.getCheckInDate().tm_year == yearNo
+					&& currentNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(currentNode->item); }
 				//checking if node has other bookings
 				if (currentNode->altNode != NULL) {
 					Node* altNode = currentNode->altNode;
-					if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+					if (altNode->item.getCheckInDate().tm_year == yearNo 
+						&& altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
 					while (altNode->next != NULL) {
 						altNode = altNode->next;
-						if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+						if (altNode->item.getCheckInDate().tm_year == yearNo 
+							&& altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
 					}
 				}
 			}

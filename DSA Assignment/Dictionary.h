@@ -79,7 +79,7 @@ public:
 
 	bool ChangeValueOfBooking(string key, Booking booking);
 
-	void GetAllOccupiedRoomByMonth(int monthNo, ListBooking& bookingList);
+	void GetAllOccupiedRoomByMonth(int monthNo,int yearNo, ListBooking& bookingList);
 
 	void getPopularRoomType(string& popular);
 };
