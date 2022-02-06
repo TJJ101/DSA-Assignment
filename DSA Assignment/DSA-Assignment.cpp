@@ -106,9 +106,11 @@ int main() {
 		{
 			//Change time for simulation
 			string date;
+			tm dateInput;
+			cout << "Current Date: " << currenDate << endl;
 			cout << "Enter Date to change to (e.g. 30/1/2002): ";
 			cin >> date;
-
+			dateInput = convertStringToTM(date);
 			break;
 		}
 		}
