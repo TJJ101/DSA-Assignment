@@ -29,7 +29,7 @@ int main() {
 
 	time_t t = system_clock::to_time_t(date);
 	currentDate = localtime(&t);
-	cout << "Current Date: " << currentDate->tm_wday << "/" << currentDate->tm_mon << "/" << currentDate->tm_year << endl;
+	cout << "Current Date: " << currentDate->tm_mday << "/" << currentDate->tm_mon << "/" << currentDate->tm_year << endl;
 
 	int option = -1;
 	while (option != 0) {
@@ -78,22 +78,16 @@ int main() {
 		case 3:
 			//Display guests staying in the hotel on a particular date
 		{
-			string date;
+			string strDate;
 			string delimiter = "/";
 
 			cout << "Enter a date(e.g. 1/1/2002): ";
-			cin >> date;
-			string date2 = date;
-			string day = date2.substr(0, date2.find(delimiter));
-			date2.erase(0, date2.find(delimiter) + delimiter.length());
-			string month = date2.substr(0, date2.find(delimiter));
-			date2.erase(0, date2.find(delimiter) + delimiter.length());
-			string year = date2.substr(0, date2.find(delimiter));
-			date2.erase(0, date2.find(delimiter) + delimiter.length());
+			cin >> strDate;
+			tm date = convertStringToTM(strDate);
 
-			cout << "Day: " << day;
-			cout << "Month: " << month;
-			cout << "Year: " << year;
+			cout << "Day: " << date.tm_mday << endl;
+			cout << "Month: " << date.tm_mon << endl;
+			cout << "Year: " << date.tm_year << endl;
 			break;
 		}
 
@@ -106,9 +100,10 @@ int main() {
 		{
 			//Change time for simulation
 			string date;
+			tm dateInput;
 			cout << "Enter Date to change to (e.g. 30/1/2002): ";
 			cin >> date;
-
+			dateInput = convertStringToTM(date);
 			break;
 		}
 		}
