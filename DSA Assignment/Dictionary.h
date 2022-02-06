@@ -3,6 +3,7 @@
 #include<string>
 #include<iostream>
 #include "Booking.h"
+#include "ListBooking.h"
 
 using namespace std;
 
@@ -73,4 +74,6 @@ public:
 
 	// void replace(KeyType key, ItemType2 item);
 	// bool contains(KeyType key);
+
+	void GetBookedBookingsByName(string name, ListBooking& list);
 };
