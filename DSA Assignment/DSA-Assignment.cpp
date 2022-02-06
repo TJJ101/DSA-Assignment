@@ -82,7 +82,32 @@ int main() {
 				{
 					if (bookDupList.getLength() > 1)
 					{
-					cout << name << " currently has " << bookDupList.getLength() << " bookings.\n";
+						int choice = 0;
+						cout << name << " currently has " << bookDupList.getLength() << " bookings.\n\n";
+						cout << "    Room Type                Check In       Check Out       Guest #       Special Requests    \n";
+						cout << "--------------------------------------------------------------------------------------\n";
+						for (int i = 0; i < bookDupList.getLength(); i++)
+						{
+							cout << i << "   " << bookDupList.get(i).getRoomType() << "         " << bookDupList.get(i).getCheckInDate().tm_mday << "/"
+								<< bookDupList.get(i).getCheckInDate().tm_mon << "/" << bookDupList.get(i).getCheckInDate().tm_year << "         "
+								<< bookDupList.get(i).getCheckOutDate().tm_mday << "/" << bookDupList.get(i).getCheckOutDate().tm_mon << "/"
+								<< bookDupList.get(i).getCheckOutDate().tm_year << "         " << bookDupList.get(i).getNumofGuest() << "         "
+								<< bookDupList.get(i).getSpecialRequest() << endl;
+						}
+						cout << "\nChoose which booking to check in (0 to exit): ";
+						cin >> choice;
+						if (choice == 0)
+						{
+							cout << "Back to Main Menu\n";
+						}
+						else if (choice > bookDupList.getLength() || choice < bookDupList.getLength())
+						{
+							cout << "Invalid Choice\n";
+						}
+						else
+						{
+
+						}
 					}
 					else
 					{
