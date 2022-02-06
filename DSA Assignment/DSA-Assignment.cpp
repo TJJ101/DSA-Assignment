@@ -8,20 +8,26 @@
 #include <chrono>
 #include "List.h"
 #include "Dictionary.h"
+#include "Queue.h"
+#include "Stack.h"
 
 using namespace std;
 using namespace std::chrono;
 
 void RetrieveRoomData(List& roomList);
-void RetrieveBookingData(Dictionary& bookingData);
+void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
 tm convertStringToTM(string date);
+bool SearchBookingQueue(Queue bookingQueue, Booking data);
 
 int main() {
 	List roomList;
 	Dictionary bookingData;
+	Stack bookedOutStack;
+	Queue bookingQueue;
+	Queue checkInQueue;
 	//Retreive Rooms Data
 	RetrieveRoomData(roomList);
-	RetrieveBookingData(bookingData);
+	RetrieveBookingData(bookingData, bookedOutStack, bookingQueue, checkInQueue);
 
 	// to set current date
 	tm currentDate;
@@ -30,7 +36,6 @@ int main() {
 	localtime_s(&currentDate,&t);
 	currentDate.tm_mon += 1;
 	currentDate.tm_year += 1900;
-	cout << "Current Date: " << currentDate.tm_mday << "/" << currentDate.tm_mon<< "/" <<currentDate.tm_year << endl;
 
 	int option = -1;
 	while (option != 0) {
@@ -64,11 +69,63 @@ int main() {
 			getline(cin, name);
 			if (!name.empty()) {
 				Booking booking = bookingData.get(name);
-				tm checkin = booking.getCheckInDate();
-				tm checkout = booking.getCheckOutDate();
-				cout << "Guest Name: " << booking.getGuestName() << endl;
-				cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
-				cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon<< "/" << checkout.tm_year << endl;
+				if (booking.getGuestName() != name || !SearchBookingQueue(bookingQueue, booking))
+				{
+					string strChoice = "";
+					int choice = -1;
+					cout << name << " currently has no booking.\n";
+					while (choice != 0)
+					{
+						cout << "Do you want to make a new booking? (Y/N): ";
+						cin >> strChoice;
+						if (strChoice == "Y") { choice = 1; }
+						else if (strChoice == "N") { choice = 0; }
+						else { choice = -1; }
+						
+						switch (choice)
+						{
+						default:
+							cout << "\nPlease enter a valid option!\n";
+							break;
+						case 0:
+							// Exit
+							cout << "\nBack to Main Menu\n";
+							break;
+						case 1:
+						{
+							string strDate;
+							tm checkInDate;
+							tm checkOutDate;
+							cout << "Enter a name: ";
+							cin.ignore();
+							getline(cin, name);
+
+							cout << "\nEnter Check in Date (e.g 30/1/2022): ";
+							cin >> strDate;
+							checkInDate = convertStringToTM(strDate);
+
+							cout << "\nEnter Check out Date (e.g 30/1/2022): ";
+							cin >> strDate;
+							checkOutDate = convertStringToTM(strDate);
+
+							break;
+						}
+						}
+					}
+				}
+				else
+				{
+					tm checkin = booking.getCheckInDate();
+					tm checkout = booking.getCheckOutDate();
+					cout << "Guest Name: " << booking.getGuestName() << endl;
+					cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
+					cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon<< "/" << checkout.tm_year << endl;
+				}
+				
+			}
+			else
+			{
+				cout << "Invalid Input\n";
 			}
 			break;
 		}
@@ -108,7 +165,8 @@ int main() {
 			//Change time for simulation
 			string date;
 			tm dateInput;
-			cout << "Current Date: " << currenDate << endl;
+			cout << "Current Date: " << currentDate.tm_mday << "/" << currentDate.tm_mon << "/" << currentDate.tm_year << endl;
+			cout << "---------------------------------------------------------\n";
 			cout << "Enter Date to change to (e.g. 30/1/2002): ";
 			cin >> date;
 			dateInput = convertStringToTM(date);
@@ -144,7 +202,7 @@ void RetrieveRoomData(List& roomList) {
 	}
 }
 
-void RetrieveBookingData(Dictionary& bookingData) {
+void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
 	fstream file;
 	file.open("Bookings.csv");
 
@@ -199,13 +257,28 @@ void RetrieveBookingData(Dictionary& bookingData) {
 		int guestAmt = stoi(guestNo);
 
 		bookingData.add(guestName,Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+		
+		// Add those with status "Booked" into queue
+		if (statusCode == 0)
+		{
+			bookedOutStack.push(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+		}
+		else if (statusCode == 2) 
+		{
+			bookingQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+		}
+		else if (statusCode == 1)
+		{
+			checkedInQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+		}
 	}
 
 	cout << bookingData.getLength() << endl;
 
 }
 
-tm convertStringToTM(string date) {
+tm convertStringToTM(string date) 
+{
 	tm result;
 
 	char arr[17];
@@ -214,5 +287,18 @@ tm convertStringToTM(string date) {
 	sscanf_s(arr, "%d/%d/%4d  %d:%d:%d",
 		&result.tm_mday, &result.tm_mon, &result.tm_year, &result.tm_hour, &result.tm_min, &result.tm_sec);
 	return result;
+}
+
+bool SearchBookingQueue(Queue bookingQueue, Booking data)
+{
+	Booking temp;
+	while (!bookingQueue.isEmpty())
+	{
+		bookingQueue.dequeue(temp);
+		if (temp.getGuestName() == data.getGuestName()) {
+			return true;
+		}
+	}
+	false;
 }
 
