@@ -82,7 +82,7 @@ void ListBooking::remove(int index) {
 // get an item at a specified position of the ListBooking (retrieve)
 Type ListBooking::get(int index) {
 	Node* current = firstNode;
-	for (int i = 1; i < index; i++) {
+	for (int i = 0; i < index; i++) {
 		current = current->next;
 	}
 	return current->item;
