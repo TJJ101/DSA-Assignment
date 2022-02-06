@@ -79,5 +79,5 @@ public:
 
 	bool ChangeValueOfBooking(string key, Booking booking);
 
-	void GetAllOccupiedRoomByMonth(int monthNo);
+	void GetAllOccupiedRoomByMonth(int monthNo, ListBooking& bookingList);
 };

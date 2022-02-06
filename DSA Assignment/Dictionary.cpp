@@ -241,6 +241,8 @@ void Dictionary::print(){
 	}
 }
 
+//Params name of guest as key, and List to append data to
+//Finds all bookings with booked status
 void Dictionary::GetBookedBookingsByName(string name, ListBooking& list) {
 	int index = hash(name);
 	Node* currentNode = items[index];
@@ -287,6 +289,8 @@ void Dictionary::GetBookedBookingsByName(string name, ListBooking& list) {
 	}
 }
 
+//params: name as key, and Booking object
+//Changes value of a booking obj in dictionary
 bool Dictionary::ChangeValueOfBooking(string key, Booking booking) {
 	int index = hash(key);
 	Node* currentNode = items[index];
@@ -362,9 +366,41 @@ bool Dictionary::ChangeValueOfBooking(string key, Booking booking) {
 	return false;
 }
 
-//void Dictionary::GetAllOccupiedRoomByMonth(int monthNo, ListBooking& booking) {
-//
-//}
+//params int monthNo, bookingList to append data to
+//Gets all the occupied rooms in a particular month
+void Dictionary::GetAllOccupiedRoomByMonth(int monthNo, ListBooking& bookingList) {
+	for (int i = 0; i < MAX_SIZE; i++) {
+		Node* currentNode = items[i];
+		if (currentNode != NULL) {
+			//checking for 1st node 
+			if (currentNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(currentNode->item); }
+			//checking if node has other bookings
+			if (currentNode->altNode != NULL) {
+				Node* altNode = currentNode->altNode;
+				if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+				while (altNode->next != NULL) {
+					altNode = altNode->next;
+					if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+				}
+			}
+			// resets currentNode to first in index
+			//checking other node
+			while (currentNode->next != NULL) {
+				currentNode = currentNode->next;
+				if (currentNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(currentNode->item); }
+				//checking if node has other bookings
+				if (currentNode->altNode != NULL) {
+					Node* altNode = currentNode->altNode;
+					if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+					while (altNode->next != NULL) {
+						altNode = altNode->next;
+						if (altNode->item.getCheckInDate().tm_mon == monthNo) { bookingList.add(altNode->item); }
+					}
+				}
+			}
+		}
+	}
+}
 
 // void Dictionary::replace(KeyType key, ItemType2 item){}
 // bool Dictionary::contains(KeyType key){}
