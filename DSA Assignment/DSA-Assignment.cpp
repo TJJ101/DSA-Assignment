@@ -17,9 +17,8 @@ using namespace std;
 using namespace std::chrono;
 
 void RetrieveRoomData(List& roomList);
-void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
+void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
 tm convertStringToTM(string date);
-bool BookingQueueExist(Queue bookingQueue, Booking data);
 void getCurrentDateTime(tm& dateTime);
 void AddBooking(Dictionary& bookingData);
 void AddToBookingCSV(Booking& booking);
@@ -29,12 +28,12 @@ void DisplayOccupiedRoomByMonth(Dictionary& bookingData);
 int main() {
 	List roomList;
 	Dictionary bookingData;
-	Stack bookedOutStack;
+	Stack checkedOutStack;
 	Queue bookingQueue;
 	Queue checkInQueue;
 	//Retreive Rooms Data
 	RetrieveRoomData(roomList);
-	RetrieveBookingData(bookingData, bookedOutStack, bookingQueue, checkInQueue);
+	RetrieveBookingData(bookingData, checkedOutStack, bookingQueue, checkInQueue);
 
 	// to set current date----------------------------------
 	tm currentDate;
@@ -141,9 +140,13 @@ int main() {
 								if (difftime(tCheckOutDate, tCurrentDate) >= 0)
 								{
 									data.setStatus(1);
+									bool check = bookingData.ChangeValueOfBooking(data.getGuestName(), data);
 									checkInQueue.enqueue(data);
-									cout << "Check in successful!\n";
+									if (check) { cout << "Check in successful!\n"; }
+									else { cout << "Check in failed!\n\n"; }
 									checkInQueue.displayItems();
+									cout << "\n\n\n";
+									bookingData.print();
 									break;
 
 								}
@@ -211,12 +214,19 @@ int main() {
 			tempDateInput->tm_sec = 0;
 			
 			Queue tempQ = Queue();
+			Stack tempStack = Stack();
 
-			cout << "Booking Date       Guest Name       Room #       Room Type        Check in       Check out       Guests #       Special Requests\n";
+			cout << "\nBooking Date       Guest Name       Room #       Room Type        Check in       Check out       Guests #       Special Requests\n";
 			cout << "------------------------------------------------------------------------------------------------------------------------------------\n";
+			while (!checkedOutStack.isEmpty())
+			{
+				Booking temp = Booking();
+
+
+			}
 			while (!checkInQueue.isEmpty())
 			{
-				Booking temp;
+				Booking temp = Booking();
 				checkInQueue.dequeue(temp);
 				struct tm temCheckInDate = temp.getCheckInDate();
 				struct tm temCheckOutDate = temp.getCheckOutDate();
@@ -246,19 +256,30 @@ int main() {
 					cout << temp.getGuestName() << "       ";
 					if (temp.getRoomNo() == -1)
 					{
-						cout << "-       ";
+						cout << "       ";
 					}
 					else
 					{
 						cout << "Room " << temp.getRoomNo() << "       ";
 					}
 					cout << temp.getRoomType() << "       ";
+					if (temp.getStatus() == 0) { cout << "Checked Out       \n"; }
+					else if (temp.getStatus() == 1) { cout << "Checked In       \n"; }
+					else if (temp.getStatus() == 2) { cout << "Booked       \n"; }
 					cout << temp.getStatus() << "       ";
 					cout << temp.getCheckInDate().tm_mday << "/" << temp.getCheckInDate().tm_mon << "/" << temp.getCheckInDate().tm_year << "       ";
 					cout << temp.getCheckOutDate().tm_mday << "/" << temp.getCheckOutDate().tm_mon << "/" << temp.getCheckOutDate().tm_year << "       ";
 					cout << temp.getNumofGuest() << "       ";
 					cout << temp.getSpecialRequest() << "       \n";
+					tempQ.enqueue(temp);
 				}
+			}
+			
+			while (!tempQ.isEmpty())
+			{
+				Booking temp = Booking();
+				tempQ.dequeue(temp);
+				checkInQueue.enqueue(temp);
 			}
 			
 			break;
@@ -316,7 +337,7 @@ void RetrieveRoomData(List& roomList) {
 }
 
 // Done by Chow Yun Cong
-void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
+void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
 	fstream file;
 	file.open("Bookings.csv");
 
@@ -375,11 +396,11 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 		bookingData.add(guestName,Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		
 		// Done by Tan Jun Jie
-		// Add those with status "Booked" into queue
 		if (statusCode == 0)
 		{
-			bookedOutStack.push(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+			checkedOutStack.push(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		}
+		// Add those with status "Booked" into queue
 		else if (statusCode == 2) 
 		{
 			bookingQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
