@@ -584,15 +584,21 @@ void TmToString(string& date, tm tmDate) {
 //Gets all occupied room in a month
 void DisplayOccupiedRoomByMonth(Dictionary& bookingData) {
 	while (true) {
-		int monthNo;
-		cout << "Enter a month by number (eg. Jan = 1, Feb = 2, etc) or 0 to exit: ";
-		cin >> monthNo;
+		int monthNo = 13;
+		int yearNo;
+		while (monthNo < 0 || monthNo > 12 ) {
+			cout << "Enter a month by number (eg. Jan = 1, Feb = 2, etc) or 0 to exit: ";
+			cin >> monthNo;
+			if (monthNo == 0) { return; }
+			else if (monthNo > 12 || monthNo < 0) { cout << "please enter a valid month number!" << endl; }
+		}
+		cout << "Enter a year by number (eg. 2021, 2022) or 0 to exit: ";
+		cin >> yearNo;
 
-		if (monthNo == 0) { break; }
-		else if (monthNo > 12 || monthNo < 0) { cout << "please enter a valid month number!" << endl; }
+		if (yearNo == 0) { break; }
 		else {
 			ListBooking list;
-			bookingData.GetAllOccupiedRoomByMonth(monthNo, list);
+			bookingData.GetAllOccupiedRoomByMonth(monthNo,yearNo, list);
 			list.printInfo();
 			return;
 		}
