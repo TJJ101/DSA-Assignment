@@ -76,4 +76,8 @@ public:
 	// bool contains(KeyType key);
 
 	void GetBookedBookingsByName(string name, ListBooking& list);
+
+	bool ChangeValueOfBooking(string key, Booking booking);
+
+	void GetAllOccupiedRoomByMonth(int monthNo);
 };

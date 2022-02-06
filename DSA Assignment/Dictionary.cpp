@@ -248,16 +248,16 @@ void Dictionary::GetBookedBookingsByName(string name, ListBooking& list) {
 		// if first node is the correct one
 		if (currentNode->item.getStatus() == 2)
 			// checked is booked or not
-			list.add(&currentNode->item);
+			list.add(currentNode->item);
 		//check if have more bookings under this person
 		if (currentNode->altNode != NULL) {
 			currentNode = currentNode->altNode;
 			if (currentNode->item.getStatus() == 2)
-				list.add(&currentNode->item);
+				list.add(currentNode->item);
 			while (currentNode->next != NULL) {
 				currentNode = currentNode->next;
 				if (currentNode->item.getStatus() == 2)
-					list.add(&currentNode->item);
+					list.add(currentNode->item);
 			}
 		}
 	}
@@ -271,21 +271,53 @@ void Dictionary::GetBookedBookingsByName(string name, ListBooking& list) {
 			// if first node is the correct one
 			if (currentNode->item.getStatus() == 2)
 				// checked is booked or not
-				list.add(&currentNode->item);
+				list.add(currentNode->item);
 			//check if have more bookings under this person
 			if (currentNode->altNode != NULL) {
 				currentNode = currentNode->altNode;
 				if (currentNode->item.getStatus() == 2)
-					list.add(&currentNode->item);
+					list.add(currentNode->item);
 				while (currentNode->next != NULL) {
 					currentNode = currentNode->next;
 					if (currentNode->item.getStatus() == 2)
-						list.add(&currentNode->item);
+						list.add(currentNode->item);
 				}
 			}
 		}
 	}
 }
+
+bool Dictionary::ChangeValueOfBooking(string key, Booking booking) {
+	int index = hash(key);
+	Node* currentNode = items[index];
+	//first node is the wanted person
+	if (currentNode->key == key) {
+		// if first node is the wanted booking
+		if (currentNode->item.getID() == booking.getID()) {
+			currentNode->item = booking;
+			return true;
+		}
+		else {
+			//checking if person has no other bookings
+			if (currentNode->altNode == NULL) { return false; }
+			// other person has other bookings
+			else {
+				currentNode = currentNode->altNode;
+				if (currentNode->item.getID() == booking.getID()) { 
+					currentNode->item = booking;
+					return true;
+				}
+				else {
+
+				}
+			}
+		}
+	}
+}
+
+//void Dictionary::GetAllOccupiedRoomByMonth(int monthNo, ListBooking& booking) {
+//
+//}
 
 // void Dictionary::replace(KeyType key, ItemType2 item){}
 // bool Dictionary::contains(KeyType key){}
