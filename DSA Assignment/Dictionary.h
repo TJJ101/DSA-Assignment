@@ -80,4 +80,6 @@ public:
 	bool ChangeValueOfBooking(string key, Booking booking);
 
 	void GetAllOccupiedRoomByMonth(int monthNo, ListBooking& bookingList);
+
+	void getPopularRoomType(string& popular);
 };

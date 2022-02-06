@@ -51,6 +51,7 @@ int main() {
 		cout << "|[2] Add and save a new booking for the hotel                             |" << endl;
 		cout << "|[3] Display guests staying in the hotel on a particular date             |" << endl;
 		cout << "|[4] Display for a particular month, the dates that each room is occupied |" << endl;
+		cout << "|[5] Display Most Popular Room Type                                       |" << endl;
 		cout << "|[0] Exit                                                                 |" << endl;
 		cout << "---------------------------------------------------------------------------" << endl;
 		cout << "|[69] Time Change                                                         |" << endl;
@@ -290,6 +291,16 @@ int main() {
 			//Display for a particular month, the dates that each room is occupied
 			DisplayOccupiedRoomByMonth(bookingData);
 			break;
+
+		case 5:
+		{
+			//done by Chow Yun Cong
+			//Display popular room type
+			string popular;
+			bookingData.getPopularRoomType(popular);
+			cout << "\nMost popular room type is " << popular << endl;
+			break;
+		}
 
 		case 69:
 		{
