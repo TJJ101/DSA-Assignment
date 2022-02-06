@@ -67,18 +67,18 @@ bool Dictionary::add(KeyType newKey, ItemType2 newItem){
 	else {
 		Node* current = items[index];
 		if (current->key == newKey) {
-			current = current->altNode;
-			if (current == NULL) {
+			if (current->altNode == NULL) {
 				Node* newNode = new Node();
 				newNode->item = newItem;
 				newNode->key = newKey;
 				newNode->next = NULL;
 				newNode->altNode = NULL;
-				current = newNode;
+				current->altNode = newNode;
 				size++;
 				return true;
 			}
 			else {
+				current = current->altNode;
 				while (current->next != NULL) {
 					current = current->next;
 				}
@@ -237,6 +237,52 @@ void Dictionary::print(){
 	}
 	else {
 		cout << "Empty" << endl;
+	}
+}
+
+void Dictionary::GetBookedBookingsByName(string name, ListBooking& list) {
+	int index = hash(name);
+	Node* currentNode = items[index];
+	if (currentNode->key == name) {
+		// if first node is the correct one
+		if (currentNode->item.getStatus() == 2)
+			// checked is booked or not
+			list.add(currentNode->item);
+		//check if have more bookings under this person
+		if (currentNode->altNode != NULL) {
+			currentNode = currentNode->altNode;
+			if (currentNode->item.getStatus() == 2)
+				list.add(currentNode->item);
+			while (currentNode->next != NULL) {
+				currentNode = currentNode->next;
+				if (currentNode->item.getStatus() == 2)
+					list.add(currentNode->item);
+			}
+		}
+	}
+	else {
+		//go through until find name
+		while (currentNode->key != name && currentNode->next != NULL) {
+			currentNode = currentNode->next;
+		}
+		// if found
+		if (currentNode->key == name) {
+			// if first node is the correct one
+			if (currentNode->item.getStatus() == 2)
+				// checked is booked or not
+				list.add(currentNode->item);
+			//check if have more bookings under this person
+			if (currentNode->altNode != NULL) {
+				currentNode = currentNode->altNode;
+				if (currentNode->item.getStatus() == 2)
+					list.add(currentNode->item);
+				while (currentNode->next != NULL) {
+					currentNode = currentNode->next;
+					if (currentNode->item.getStatus() == 2)
+						list.add(currentNode->item);
+				}
+			}
+		}
 	}
 }
 

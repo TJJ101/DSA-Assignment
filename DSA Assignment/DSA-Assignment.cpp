@@ -19,7 +19,7 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 tm convertStringToTM(string date);
 bool BookingQueueExist(Queue bookingQueue, Booking data);
 void getCurrentDateTime(tm& dateTime);
-void AddBooking();
+void AddBooking(Dictionary& bookingData);
 
 int main() {
 	List roomList;
@@ -103,6 +103,7 @@ int main() {
 		}
 		case 2:
 			// Add and save a new booking for the hotel   
+			AddBooking(bookingData);
 			break;
 
 		case 3:
@@ -261,17 +262,107 @@ tm convertStringToTM(string date)
 	return result;
 }
 
-//void AddBooking(Dictionary* bookingData) {
-//	string input = "";
-//	while (!input._Equal("0")) {
-//		cout << "Please enter your name: ";
-//		cin >> input;
-//		cin.ignore();
-//		while (!input._Equal("0")) {
-//
-//		}
-//	}
-//}
+void AddBooking(Dictionary& bookingData) {
+	string input = "";
+	while (true) {
+		// get Guest name
+		cout << "\nPlease enter your name or enter 0 to exit: ";
+		getline(cin, input);
+		cin.ignore();
+		cout << input << endl;
+		if (input == "0")
+			break;
+		string guestName = input;
+
+		//Get room type
+		string roomType;
+		bool selected = false;
+		while (!selected) {
+			cout << "\n[1] Standard City View" << endl;
+			cout << "[2] Deluxe City View" << endl;
+			cout << "[3] Executive Sea View" << endl;
+			cout << "[4] President Suite" << endl;
+			cout << "Please choose your room type or enter 0 to exit: ";
+			cin >> input;
+			switch (stoi(input)) {
+			default:
+				cout << "\nPlease select a valid option" << endl;
+				break;
+			case 1:
+				roomType = "Standard City View";
+				selected = true;
+				break;
+			case 2:
+				roomType = "Deluxe Sea View";
+				selected = true;
+				break;
+			case 3:
+				roomType = "Executive Sea View";
+				selected = true;
+				break;
+			case 4:
+				roomType = "President Suite";
+				selected = true;
+				break;
+			case 0 :
+				return;
+			}
+		}
+
+		//get check in date;
+		tm checkIndateInput;
+		cout << "Enter Check in Date to (e.g. 30/1/2002) or enter 0 to exit: ";
+		cin >> input;
+		if (input._Equal("0"))
+			return;
+		checkIndateInput = convertStringToTM(input);
+		
+		//get check out date
+		tm checkOutdateInput;
+		cout << "Enter Check out Date to (e.g. 30/1/2002) or enter 0 to exit: ";
+		cin >> input;
+		if (input._Equal("0"))
+			return;
+		checkOutdateInput = convertStringToTM(input);
+		
+		// get guest amount
+		int guestAmt;
+		cout << "Enter Check out Date to (e.g. 30/1/2002) or enter 0 to exit: ";
+		if (input._Equal("0"))
+			return;
+		cin >> input;
+		guestAmt = stoi(input);
+		
+		cout << "Enter any special request you have or leave it blank or enter 0 to exit: ";
+		if (input._Equal("0"))
+			return;
+		cin >> input;
+
+		//creating new booking object
+		Booking booking = Booking();
+		booking.setGuestName(guestName);
+		booking.setRoomType(roomType);
+		booking.setStatus(2);
+		booking.setCheckInDate(checkIndateInput);
+		booking.setCheckOutDate(checkOutdateInput);
+		booking.setSpecialRequest(input);
+		bookingData.add(booking.getGuestName(),booking);
+		cout << bookingData.getLength() << endl;
+	}
+}
+bool BookingQueueExist(Queue bookingQueue, Booking data)
+{
+	Booking temp;
+	while (!bookingQueue.isEmpty())
+	{
+		bookingQueue.dequeue(temp);
+		if (temp.getGuestName() == data.getGuestName()) {
+			return true;
+		}
+	}
+	return false;
+}
+
 
 void getCurrentDateTime(tm& tmDate) {
 	auto date = system_clock::now();
