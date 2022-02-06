@@ -130,5 +130,5 @@ void ListBooking::printInfo() {
 			temp = temp->next;
 		}
 	}
-	
+	cout << "THERES NOTHING INSIDE!" << endl;
 }
