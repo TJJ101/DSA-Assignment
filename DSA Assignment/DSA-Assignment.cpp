@@ -24,11 +24,13 @@ int main() {
 	RetrieveBookingData(bookingData);
 
 	// to set current date
-	tm* currentDate;
+	tm currentDate;
 	auto date = system_clock::now();
 	time_t t = system_clock::to_time_t(date);
-	currentDate = localtime(&t);
-	cout << "Current Date: " << currentDate->tm_mday << "/" << currentDate->tm_mon + 1 << "/" << currentDate->tm_year + 1900 << endl;
+	localtime_s(&currentDate,&t);
+	currentDate.tm_mon += 1;
+	currentDate.tm_year += 1900;
+	cout << "Current Date: " << currentDate.tm_mday << "/" << currentDate.tm_mon<< "/" <<currentDate.tm_year << endl;
 
 	int option = -1;
 	while (option != 0) {
@@ -77,16 +79,22 @@ int main() {
 		case 3:
 			//Display guests staying in the hotel on a particular date
 		{
-			string strDate;
+			string date;
 			string delimiter = "/";
 
 			cout << "Enter a date(e.g. 1/1/2002): ";
-			cin >> strDate;
-			tm date = convertStringToTM(strDate);
+			cin >> date;
+			string date2 = date;
+			string day = date2.substr(0, date2.find(delimiter));
+			date2.erase(0, date2.find(delimiter) + delimiter.length());
+			string month = date2.substr(0, date2.find(delimiter));
+			date2.erase(0, date2.find(delimiter) + delimiter.length());
+			string year = date2.substr(0, date2.find(delimiter));
+			date2.erase(0, date2.find(delimiter) + delimiter.length());
 
-			cout << "Day: " << date.tm_mday << endl;
-			cout << "Month: " << date.tm_mon << endl;
-			cout << "Year: " << date.tm_year << endl;
+			cout << "Day: " << day;
+			cout << "Month: " << month;
+			cout << "Year: " << year;
 			break;
 		}
 
