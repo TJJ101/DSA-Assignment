@@ -18,6 +18,8 @@ void RetrieveRoomData(List& roomList);
 void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
 tm convertStringToTM(string date);
 bool BookingQueueExist(Queue bookingQueue, Booking data);
+void getCurrentDateTime(tm& dateTime);
+void AddBooking();
 
 int main() {
 	List roomList;
@@ -29,14 +31,10 @@ int main() {
 	RetrieveRoomData(roomList);
 	RetrieveBookingData(bookingData, bookedOutStack, bookingQueue, checkInQueue);
 
-	// to set current date
+	// to set current date----------------------------------
 	tm currentDate;
-	auto date = system_clock::now();
-	time_t t = system_clock::to_time_t(date);
-	localtime_s(&currentDate,&t);
-	currentDate.tm_mon += 1;
-	currentDate.tm_year += 1900;
-	
+	getCurrentDateTime(currentDate);
+	//----------------------------------------------------
 	bookingQueue.displayItems();
 	cout << "\n\n";
 
@@ -270,5 +268,25 @@ bool BookingQueueExist(Queue bookingQueue, Booking data)
 		}
 	}
 	return false;
+}
+
+//void AddBooking(Dictionary* bookingData) {
+//	string input = "";
+//	while (!input._Equal("0")) {
+//		cout << "Please enter your name: ";
+//		cin >> input;
+//		cin.ignore();
+//		while (!input._Equal("0")) {
+//
+//		}
+//	}
+//}
+
+void getCurrentDateTime(tm& tmDate) {
+	auto date = system_clock::now();
+	time_t t = system_clock::to_time_t(date);
+	localtime_s(&tmDate, &t);
+	tmDate.tm_mon += 1;
+	tmDate.tm_year += 1900;
 }
 
