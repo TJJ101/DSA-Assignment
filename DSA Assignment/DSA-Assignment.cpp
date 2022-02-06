@@ -26,10 +26,9 @@ int main() {
 	// to set current date
 	tm* currentDate;
 	auto date = system_clock::now();
-
 	time_t t = system_clock::to_time_t(date);
 	currentDate = localtime(&t);
-	cout << "Current Date: " << currentDate->tm_mday << "/" << currentDate->tm_mon << "/" << currentDate->tm_year << endl;
+	cout << "Current Date: " << currentDate->tm_mday << "/" << currentDate->tm_mon + 1 << "/" << currentDate->tm_year + 1900 << endl;
 
 	int option = -1;
 	while (option != 0) {
@@ -101,6 +100,7 @@ int main() {
 			//Change time for simulation
 			string date;
 			tm dateInput;
+			cout << "Current Date: " << currenDate << endl;
 			cout << "Enter Date to change to (e.g. 30/1/2002): ";
 			cin >> date;
 			dateInput = convertStringToTM(date);
