@@ -19,7 +19,6 @@ using namespace std::chrono;
 void RetrieveRoomData(List& roomList);
 void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
 tm convertStringToTM(string date);
-bool BookingQueueExist(Queue bookingQueue, Booking data);
 void getCurrentDateTime(tm& dateTime);
 void AddBooking(Dictionary& bookingData);
 void AddToBookingCSV(Booking& booking);
@@ -140,9 +139,13 @@ int main() {
 								if (difftime(tCheckOutDate, tCurrentDate) >= 0)
 								{
 									data.setStatus(1);
+									bool check = bookingData.ChangeValueOfBooking(data.getGuestName(), data);
 									checkInQueue.enqueue(data);
-									cout << "Check in successful!\n";
+									if (check) { cout << "Check in successful!\n"; }
+									else { cout << "Check in failed!\n\n"; }
 									checkInQueue.displayItems();
+									cout << "\n\n\n";
+									bookingData.print();
 									break;
 
 								}
