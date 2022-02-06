@@ -24,6 +24,7 @@ void getCurrentDateTime(tm& dateTime);
 void AddBooking(Dictionary& bookingData);
 void AddToBookingCSV(Booking& booking);
 void TmToString(string& date, tm tmDate);
+void DisplayOccupiedRoomByMonth(Dictionary& bookingData);
 
 int main() {
 	List roomList;
@@ -266,6 +267,7 @@ int main() {
 
 		case 4:
 			//Display for a particular month, the dates that each room is occupied
+			DisplayOccupiedRoomByMonth(bookingData);
 			break;
 
 		case 69:
@@ -392,6 +394,7 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 
 }
 
+//Done by Yun Cong
 tm convertStringToTM(string date) 
 {
 	tm result;
@@ -538,14 +541,22 @@ void TmToString(string& date, tm tmDate) {
 	date = to_string(tmDate.tm_mday) + "/" + to_string(tmDate.tm_mon) + "/" + to_string(tmDate.tm_year);
 }
 
-/*
-ListBooking FindGuestStayingAtDate(tm Date)
-{
-	ListBooking guestList = ListBooking();
+void DisplayOccupiedRoomByMonth(Dictionary& bookingData) {
+	while (true) {
+		int monthNo;
+		cout << "Enter a month by number (eg. Jan = 1, Feb = 2, etc) or 0 to exit: ";
+		cin >> monthNo;
 
-
-
+		if (monthNo == 0) { break; }
+		else if (monthNo > 12 || monthNo < 0) { cout << "please enter a valid month number!" << endl; }
+		else {
+			ListBooking list;
+			bookingData.GetAllOccupiedRoomByMonth(monthNo, list);
+			list.printInfo();
+			return;
+		}
+		
+	}
 }
-*/
 
 
