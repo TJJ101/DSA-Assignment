@@ -1,9 +1,16 @@
+#ifdef _MSC_VER
+#define _CRT_SECURE_NO_WARNINGS
+#endif
+
 #include <iostream>
 #include <fstream>
+#include <cTime>
+#include <chrono>
 #include "List.h"
 #include "Dictionary.h"
 
 using namespace std;
+using namespace std::chrono;
 
 void RetrieveRoomData(List& roomList);
 void RetrieveBookingData(Dictionary& bookingData);
@@ -12,10 +19,17 @@ tm convertStringToTM(string date);
 int main() {
 	List roomList;
 	Dictionary bookingData;
-
 	//Retreive Rooms Data
 	RetrieveRoomData(roomList);
 	RetrieveBookingData(bookingData);
+
+	// to set current date
+	tm* currentDate;
+	auto date = system_clock::now();
+
+	time_t t = system_clock::to_time_t(date);
+	currentDate = localtime(&t);
+	cout << "Current Date: " << currentDate->tm_wday << "/" << currentDate->tm_mon << "/" << currentDate->tm_year << endl;
 
 	int option = -1;
 	while (option != 0) {
@@ -42,23 +56,61 @@ int main() {
 
 		case 1:
 			//Check in a guest using the booking information  
+		{
+			string name;
+			cout << "Enter a name: ";
+			cin.ignore();
+			getline(cin, name);
+			if (!name.empty()) {
+				Booking booking = bookingData.get(name);
+				tm checkin = booking.getCheckInDate();
+				tm checkout = booking.getCheckOutDate();
+				cout << "Guest Name: " << booking.getGuestName() << endl;
+				cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
+				cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon<< "/" << checkout.tm_year << endl;
+			}
 			break;
-
+		}
 		case 2:
 			// Add and save a new booking for the hotel   
 			break;
 
 		case 3:
 			//Display guests staying in the hotel on a particular date
+		{
+			string date;
+			string delimiter = "/";
+
+			cout << "Enter a date(e.g. 1/1/2002): ";
+			cin >> date;
+			string date2 = date;
+			string day = date2.substr(0, date2.find(delimiter));
+			date2.erase(0, date2.find(delimiter) + delimiter.length());
+			string month = date2.substr(0, date2.find(delimiter));
+			date2.erase(0, date2.find(delimiter) + delimiter.length());
+			string year = date2.substr(0, date2.find(delimiter));
+			date2.erase(0, date2.find(delimiter) + delimiter.length());
+
+			cout << "Day: " << day;
+			cout << "Month: " << month;
+			cout << "Year: " << year;
 			break;
+		}
+
 
 		case 4:
 			//Display for a particular month, the dates that each room is occupied
 			break;
 
 		case 69:
+		{
 			//Change time for simulation
+			string date;
+			cout << "Enter Date to change to (e.g. 30/1/2002): ";
+			cin >> date;
+
 			break;
+		}
 		}
 	}
 }
