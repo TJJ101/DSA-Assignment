@@ -93,11 +93,11 @@ int main() {
 						{
 							string checkInDate = "";
 							string checkOutDate = "";
-							TmToString(checkInDate, bookDupList.get(i).getCheckInDate());
-							TmToString(checkOutDate, bookDupList.get(i).getCheckOutDate());
-							cout << i+1 << "   " << bookDupList.get(i).getRoomType() << "       " << checkInDate << "       " << checkOutDate
-								<< "       " << bookDupList.get(i).getNumofGuest() << "       "
-								<< bookDupList.get(i).getSpecialRequest() << endl;
+							TmToString(checkInDate, bookDupList.get(i)->getCheckInDate());
+							TmToString(checkOutDate, bookDupList.get(i)->getCheckOutDate());
+							cout << i+1 << "   " << bookDupList.get(i)->getRoomType() << "       " << checkInDate << "       " << checkOutDate
+								<< "       " << bookDupList.get(i)->getNumofGuest() << "       "
+								<< bookDupList.get(i)->getSpecialRequest() << endl;
 						}
 						cout << "\nChoose which booking to check in (0 to exit): ";
 						cin >> choice;
@@ -107,9 +107,9 @@ int main() {
 						}
 						else if (choice <= bookDupList.getLength())
 						{
-							Booking data = bookDupList.get(choice - 1);
-							struct tm temCheckInDate = data.getCheckInDate();
-							struct tm temCheckOutDate = data.getCheckOutDate();
+							Booking* data = bookDupList.get(choice - 1);
+							struct tm temCheckInDate = data->getCheckInDate();
+							struct tm temCheckOutDate = data->getCheckOutDate();
 							struct tm temCurrentDate = currentDate;
 							tm* tempCheckInDate = &(temCheckInDate);
 							tm* tempCheckOutDate = &(temCheckOutDate);
@@ -135,28 +135,44 @@ int main() {
 							time_t tCurrentDate = mktime(tempCurrentDate);
 
 
-							cout << "time_t of Check In Date: " << tCheckInDate << endl;
-							cout << "time_t of Check Out Date: " << tCheckOutDate << endl;
-							cout << "time_t of Current Date: " << tCurrentDate << endl;
-							cout << difftime(tCheckInDate, tCurrentDate) << endl;
+							if (difftime(tCheckInDate, tCurrentDate) <= 0)
+							{
+								if (difftime(tCheckOutDate, tCurrentDate) >= 0)
+								{
+									data->setStatus(1);
+									checkInQueue.enqueue(data);
+									cout << "Check in successful!\n";
+									checkInQueue.displayItems();
+									break;
 
-							
+								}
+								else
+								{
+									cout << "Check in Failed.\n";
+									cout << "Check out date has passed.\n";
+								}
+							}
+							else
+							{
+								cout << "Unable to check in.\n";
+								cout << "Check in date has not been reached.\n";
+							}
 							
 						}
 						else { cout << "Invalid Choice\n"; }
 					}
 					else
 					{
-						Booking booking = bookDupList.get(0);
-						if (booking.getStatus() == 2)
+						Booking* booking = bookDupList.get(0);
+						if (booking->getStatus() == 2)
 						{
-							tm checkin = booking.getCheckInDate();
-							tm checkout = booking.getCheckOutDate();
-							cout << "Guest Name: " << booking.getGuestName() << endl;
+							tm checkin = booking->getCheckInDate();
+							tm checkout = booking->getCheckOutDate();
+							cout << "Guest Name: " << booking->getGuestName() << endl;
 							cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
 							cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon << "/" << checkout.tm_year << endl;
 						}
-						else if (booking.getStatus() == 2)
+						else if (booking->getStatus() == 2)
 						{
 							cout << name << " currently has no booking.\n";
 							break;
@@ -311,11 +327,17 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 		}
 		else if (statusCode == 2) 
 		{
-			bookingQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+			Booking temp = Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest);
+			Booking* tempPtr = &temp;
+
+			bookingQueue.enqueue(tempPtr);
 		}
 		else if (statusCode == 1)
 		{
-			checkedInQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+			Booking temp = Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest);
+			Booking* tempPtr = &temp;
+
+			checkedInQueue.enqueue(tempPtr);
 		}
 	}
 

@@ -97,46 +97,46 @@ void Queue::displayItems()
 	{
 		if (frontNode == backNode) // if there is only 1 item in queue
 		{
-			cout << frontNode->item.getID() << "       ";
-			cout << frontNode->item.getBookingDate().tm_mday << "/" << frontNode->item.getBookingDate().tm_mon << "/" << frontNode->item.getBookingDate().tm_year << "       ";
-			cout << frontNode->item.getGuestName() << "       ";
-			if (frontNode->item.getRoomNo() == -1)
+			cout << frontNode->item->getID() << "       ";
+			cout << frontNode->item->getBookingDate().tm_mday << "/" << frontNode->item->getBookingDate().tm_mon << "/" << frontNode->item->getBookingDate().tm_year << "       ";
+			cout << frontNode->item->getGuestName() << "       ";
+			if (frontNode->item->getRoomNo() == -1)
 			{
 				cout << "-       ";
 			}
 			else
 			{
-				cout << "Room " << frontNode->item.getRoomNo() << "       ";
+				cout << "Room " << frontNode->item->getRoomNo() << "       ";
 			}
-			cout << frontNode->item.getRoomType() << "       ";
-			cout << frontNode->item.getStatus() << "       ";
-			cout << frontNode->item.getCheckInDate().tm_mday << "/" << frontNode->item.getCheckInDate().tm_mon << "/" << frontNode->item.getCheckInDate().tm_year << "       ";
-			cout << frontNode->item.getCheckOutDate().tm_mday << "/" << frontNode->item.getCheckOutDate().tm_mon << "/" << frontNode->item.getCheckOutDate().tm_year << "       ";
-			cout << frontNode->item.getNumofGuest() << "       ";
-			cout << frontNode->item.getSpecialRequest() << "       \n";
+			cout << frontNode->item->getRoomType() << "       ";
+			cout << frontNode->item->getStatus() << "       ";
+			cout << frontNode->item->getCheckInDate().tm_mday << "/" << frontNode->item->getCheckInDate().tm_mon << "/" << frontNode->item->getCheckInDate().tm_year << "       ";
+			cout << frontNode->item->getCheckOutDate().tm_mday << "/" << frontNode->item->getCheckOutDate().tm_mon << "/" << frontNode->item->getCheckOutDate().tm_year << "       ";
+			cout << frontNode->item->getNumofGuest() << "       ";
+			cout << frontNode->item->getSpecialRequest() << "       \n";
 		}
 		else
 		{
 			Node* temp = frontNode;
 			while (temp != NULL)
 			{
-				cout << temp->item.getID() << "       ";
-				cout << temp->item.getBookingDate().tm_mday << "/" << temp->item.getBookingDate().tm_mon << "/" << temp->item.getBookingDate().tm_year << "       ";
-				cout << temp->item.getGuestName() << "       ";
-				if (temp->item.getRoomNo() == -1)
+				cout << temp->item->getID() << "       ";
+				cout << temp->item->getBookingDate().tm_mday << "/" << temp->item->getBookingDate().tm_mon << "/" << temp->item->getBookingDate().tm_year << "       ";
+				cout << temp->item->getGuestName() << "       ";
+				if (temp->item->getRoomNo() == -1)
 				{
 					cout << "-       ";
 				}
 				else
 				{
-					cout << "Room " << temp->item.getRoomNo() << "       ";
+					cout << "Room " << temp->item->getRoomNo() << "       ";
 				}
-				cout << temp->item.getRoomType() << "       ";
-				cout << temp->item.getStatus() << "       ";
-				cout << temp->item.getCheckInDate().tm_mday << "/" << temp->item.getCheckInDate().tm_mon << "/" << temp->item.getCheckInDate().tm_year << "       ";
-				cout << temp->item.getCheckOutDate().tm_mday << "/" << temp->item.getCheckOutDate().tm_mon << "/" << temp->item.getCheckOutDate().tm_year << "       ";
-				cout << temp->item.getNumofGuest() << "       ";
-				cout << temp->item.getSpecialRequest() << "       \n";
+				cout << temp->item->getRoomType() << "       ";
+				cout << temp->item->getStatus() << "       ";
+				cout << temp->item->getCheckInDate().tm_mday << "/" << temp->item->getCheckInDate().tm_mon << "/" << temp->item->getCheckInDate().tm_year << "       ";
+				cout << temp->item->getCheckOutDate().tm_mday << "/" << temp->item->getCheckOutDate().tm_mon << "/" << temp->item->getCheckOutDate().tm_year << "       ";
+				cout << temp->item->getNumofGuest() << "       ";
+				cout << temp->item->getSpecialRequest() << "       \n";
 				temp = temp->next;
 			}
 		}
