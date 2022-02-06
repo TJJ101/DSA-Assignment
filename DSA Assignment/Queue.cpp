@@ -73,6 +73,7 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 		}
 		else
 		{
+			bool inserted = false;
 			while (!isEmpty())
 			{
 				Booking temp2 = Booking();
@@ -87,6 +88,11 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 
 				time_t tCHECKDATE = mktime(tempCHECKDATE);
 				if (difftime(tCHECKDATE, tInputtedDate) <= 0) { tempQ.enqueue(data); }
+				if (difftime(tInputtedDate, tCheckInDate) < 0 && inserted == false) {
+					tempQ.enqueue(data);
+					inserted = true;
+				}
+				Booking temp2;
 				dequeue(temp2);
 				tempQ.enqueue(temp2);
 			}
@@ -144,10 +150,10 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 
 		}
 		// set back node's next pointer to point to new node
-		backNode->next = temp;
+		//backNode->next = temp;
 	}
 	// set back node (pointer) to point to new node
-	backNode = temp;
+	//backNode = temp;
 	return true;
 }
 
