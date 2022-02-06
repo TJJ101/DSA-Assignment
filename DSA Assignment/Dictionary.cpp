@@ -308,11 +308,58 @@ bool Dictionary::ChangeValueOfBooking(string key, Booking booking) {
 					return true;
 				}
 				else {
-
+					if (currentNode->next != NULL) {
+						while (currentNode != NULL) {
+							currentNode = currentNode->next;
+							if (currentNode->item.getID() == booking.getID()) {
+								currentNode->item = booking;
+								return true;
+							}
+						}
+					}
 				}
 			}
 		}
 	}
+	
+	// if first node is not wanted person
+	if (currentNode->next != NULL) {
+		while (currentNode != NULL && currentNode->next != NULL) {
+			currentNode = currentNode->next;
+			//key found
+			if (currentNode->key == key) { break; }
+		}
+		//should be wanted person
+		if (currentNode->item.getID() == booking.getID()) {
+			currentNode->item = booking;
+			return true;
+		}
+		else {
+			//checking if person has no other bookings
+			if (currentNode->altNode == NULL) { return false; }
+			// other person has other bookings
+			else {
+				currentNode = currentNode->altNode;
+				if (currentNode->item.getID() == booking.getID()) {
+					currentNode->item = booking;
+					return true;
+				}
+				else {
+					if (currentNode->next != NULL) {
+						while (currentNode != NULL) {
+							currentNode = currentNode->next;
+							if (currentNode->item.getID() == booking.getID()) {
+								currentNode->item = booking;
+								return true;
+							}
+						}
+					}
+				}
+			}
+		}
+	}
+
+	return false;
 }
 
 //void Dictionary::GetAllOccupiedRoomByMonth(int monthNo, ListBooking& booking) {
