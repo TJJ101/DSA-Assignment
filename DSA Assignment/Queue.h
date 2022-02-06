@@ -2,16 +2,17 @@
 #pragma once
 #include<string>
 #include<iostream>
+#include "Booking.h"
 using namespace std;
 
-typedef char ItemType;
+typedef Booking ItemType3;
 
 class Queue
 {
 private:
 	struct Node
 	{
-		ItemType item;	// item
+		ItemType3 item;	// item
 		Node* next;	// pointer pointing to next item
 	};
 
@@ -26,16 +27,16 @@ public:
 	~Queue();
 
 	// enqueue (add) item at the back of queue
-	bool enqueue(ItemType item);
+	bool enqueue(ItemType3 item);
 
 	// dequeue (remove) item from front of queue
 	bool dequeue();
 
 	// dequeue (remove) and retrieve item from front of queue
-	bool dequeue(ItemType& item);
+	bool dequeue(ItemType3& item);
 
 	// retrieve (get) item from front of queue
-	void getFront(ItemType& item);
+	void getFront(ItemType3& item);
 
 	// check if the queue is empty
 	bool isEmpty();
