@@ -107,7 +107,28 @@ void ListBooking::print() {
 		item = temp->item;
 		cout << item.getGuestName() << " ";
 		cout << item.getRoomType() << " ";
-		cout << item.getStatus() << endl;
+		cout << item.getStatus() << " ";
+		cout << item.getCheckInDate().tm_mday << "/" << item.getCheckInDate().tm_mon << "/" << item.getCheckInDate().tm_year << " ";
+		cout << item.getCheckOutDate().tm_mday << "/" << item.getCheckOutDate().tm_mon << "/" << item.getCheckOutDate().tm_year << " " << endl;
 		temp = temp->next;
 	}
+}
+
+void ListBooking::printInfo() {
+	if (size != 0) {
+		cout << "\nGuest Name | Room Type | Room Number | Check in Date | Check out Date" << endl;
+		Node* temp = firstNode;
+		Type item;
+		while (temp != NULL) {
+			item = temp->item;
+			cout << "----------------------------------------------------------------------------------------------------" << endl;
+			cout << item.getGuestName() << " | ";
+			cout << item.getRoomType() << " | ";
+			cout << "Room " << item.getRoomNo() << " | ";
+			cout << item.getCheckInDate().tm_mday << "/" << item.getCheckInDate().tm_mon << "/" << item.getCheckInDate().tm_year << " | ";
+			cout << item.getCheckOutDate().tm_mday << "/" << item.getCheckOutDate().tm_mon << "/" << item.getCheckOutDate().tm_year << endl;
+			temp = temp->next;
+		}
+	}
+	
 }

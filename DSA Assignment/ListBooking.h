@@ -67,4 +67,6 @@ public:
 
 	// display the items in the ListBooking
 	void print();
+
+	void printInfo();
 };
