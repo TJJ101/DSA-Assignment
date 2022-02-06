@@ -7,7 +7,7 @@
 
 using namespace std;
 
-typedef Booking* Type;
+typedef Booking Type;
 
 class ListBooking {
 private:

@@ -6,7 +6,7 @@
 #include "Booking.h"
 using namespace std;
 
-typedef Booking* ItemType3;
+typedef Booking ItemType3;
 
 class Queue
 {

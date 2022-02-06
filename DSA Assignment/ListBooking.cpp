@@ -105,9 +105,9 @@ void ListBooking::print() {
 	Type item;
 	while (temp != NULL) {
 		item = temp->item;
-		cout << item->getGuestName() << " ";
-		cout << item->getRoomType() << " ";
-		cout << item->getStatus() << endl;
+		cout << item.getGuestName() << " ";
+		cout << item.getRoomType() << " ";
+		cout << item.getStatus() << endl;
 		temp = temp->next;
 	}
 }
