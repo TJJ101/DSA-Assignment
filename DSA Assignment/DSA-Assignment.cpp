@@ -24,6 +24,7 @@ void AddBooking(Dictionary& bookingData);
 void AddToBookingCSV(Booking& booking);
 void TmToString(string& date, tm tmDate);
 void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData);
+void DisplayOccupiedRoomByMonth(Dictionary& bookingData);
 
 int main() {
 	List roomList;
@@ -58,6 +59,7 @@ int main() {
 		cout << "|[2] Add and save a new booking for the hotel                             |" << endl;
 		cout << "|[3] Display guests staying in the hotel on a particular date             |" << endl;
 		cout << "|[4] Display for a particular month, the dates that each room is occupied |" << endl;
+		cout << "|[5] Display Most Popular Room Type                                       |" << endl;
 		cout << "|[0] Exit                                                                 |" << endl;
 		cout << "---------------------------------------------------------------------------" << endl;
 		cout << "|[69] Time Change                                                         |" << endl;
@@ -368,7 +370,18 @@ int main() {
 
 		case 4:
 			//Display for a particular month, the dates that each room is occupied
+			DisplayOccupiedRoomByMonth(bookingData);
 			break;
+
+		case 5:
+		{
+			//done by Chow Yun Cong
+			//Display popular room type
+			string popular;
+			bookingData.getPopularRoomType(popular);
+			cout << "\nMost popular room type is " << popular << endl;
+			break;
+		}
 
 		case 69:
 		{
@@ -389,6 +402,7 @@ int main() {
 }
 
 //Done by Chow Yun Cong
+//Retrieving Room Data from Rooms.csv
 void RetrieveRoomData(List& roomList) {
 	fstream file;
 	file.open("Rooms.csv");
@@ -416,6 +430,7 @@ void RetrieveRoomData(List& roomList) {
 }
 
 // Done by Chow Yun Cong
+//Retrieving booking data from Bookings.csv
 void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
 	fstream file;
 	file.open("Bookings.csv");
@@ -494,6 +509,8 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue&
 
 }
 
+//Done by Yun Cong
+//convert string to tm
 tm convertStringToTM(string date) 
 {
 	tm result;
@@ -507,6 +524,7 @@ tm convertStringToTM(string date)
 }
 
 // Done by Chow Yun Cong
+//Adds and save a new booking
 void AddBooking(Dictionary& bookingData) {
 	string input = "";
 	while (true) {
@@ -609,6 +627,7 @@ void AddBooking(Dictionary& bookingData) {
 	}
 }
 
+//gets the current date time in tm format
 void getCurrentDateTime(tm& tmDate) {
 	auto date = system_clock::now();
 	time_t t = system_clock::to_time_t(date);
@@ -618,6 +637,7 @@ void getCurrentDateTime(tm& tmDate) {
 }
 
 // Done by Chow Yun Cong
+//Appends new Booking data to Bookings.csv
 void AddToBookingCSV(Booking& booking) {
 	fstream file("Bookings.csv", ios::app);
 	tm nowTime;
@@ -636,6 +656,7 @@ void AddToBookingCSV(Booking& booking) {
 	file.close();
 }
 
+//converts tm to string
 void TmToString(string& date, tm tmDate) {
 	date = to_string(tmDate.tm_mday) + "/" + to_string(tmDate.tm_mon) + "/" + to_string(tmDate.tm_year);
 }
@@ -668,8 +689,6 @@ void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData)
 
 		time_t tCheckOutDate = mktime(tempCheckOutDate);
 		time_t tCurrentDate = mktime(tempCurrentDate);
-
-
 		if (difftime(tCheckOutDate, tCurrentDate) < 0)
 		{
 			//Set Chackout status for Booking
@@ -695,6 +714,31 @@ void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData)
 		cout << "======================================================================================\n";
 	}
 	cout << "\n\n";
+}
+//params dictionary: the booking data
+//Gets all occupied room in a month
+void DisplayOccupiedRoomByMonth(Dictionary& bookingData) {
+	while (true) {
+		int monthNo = 13;
+		int yearNo;
+		while (monthNo < 0 || monthNo > 12) {
+			cout << "Enter a month by number (eg. Jan = 1, Feb = 2, etc) or 0 to exit: ";
+			cin >> monthNo;
+			if (monthNo == 0) { return; }
+			else if (monthNo > 12 || monthNo < 0) { cout << "please enter a valid month number!" << endl; }
+		}
+		cout << "Enter a year by number (eg. 2021, 2022) or 0 to exit: ";
+		cin >> yearNo;
+
+		if (yearNo == 0) { break; }
+		else {
+			ListBooking list;
+			bookingData.GetAllOccupiedRoomByMonth(monthNo, yearNo, list);
+			list.printInfo();
+			return;
+		}
+
+	}
 }
 
 
