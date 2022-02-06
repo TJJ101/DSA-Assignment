@@ -129,6 +129,7 @@ void ListBooking::printInfo() {
 			cout << item.getCheckOutDate().tm_mday << "/" << item.getCheckOutDate().tm_mon << "/" << item.getCheckOutDate().tm_year << endl;
 			temp = temp->next;
 		}
+		return;
 	}
 	cout << "THERES NOTHING INSIDE!" << endl;
 }
