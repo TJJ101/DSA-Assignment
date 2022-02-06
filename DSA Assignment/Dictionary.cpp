@@ -1,3 +1,4 @@
+// CHOW YUN CONG
 #include "Dictionary.h"
 
 // constructor

@@ -1,4 +1,5 @@
 // List.h - - Specification of List ADT
+// CHOW YUN CONG
 
 #include<string>
 #include<iostream>

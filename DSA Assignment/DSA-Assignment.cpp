@@ -1,3 +1,4 @@
+//TAN JUN JIE S10194152D & CHOW YUN CONG
 #ifdef _MSC_VER
 #define _CRT_SECURE_NO_WARNINGS
 #endif
@@ -91,10 +92,12 @@ int main() {
 						cout << "--------------------------------------------------------------------------------------\n";
 						for (int i = 0; i < bookDupList.getLength(); i++)
 						{
-							cout << i+1 << "   " << bookDupList.get(i).getRoomType() << "         " << bookDupList.get(i).getCheckInDate().tm_mday << "/"
-								<< bookDupList.get(i).getCheckInDate().tm_mon << "/" << bookDupList.get(i).getCheckInDate().tm_year << "         "
-								<< bookDupList.get(i).getCheckOutDate().tm_mday << "/" << bookDupList.get(i).getCheckOutDate().tm_mon << "/"
-								<< bookDupList.get(i).getCheckOutDate().tm_year << "         " << bookDupList.get(i).getNumofGuest() << "         "
+							string checkInDate = "";
+							string checkOutDate = "";
+							TmToString(checkInDate, bookDupList.get(i).getCheckInDate());
+							TmToString(checkOutDate, bookDupList.get(i).getCheckOutDate());
+							cout << i+1 << "   " << bookDupList.get(i).getRoomType() << "         " << checkInDate << checkOutDate 
+								<< "         " << bookDupList.get(i).getNumofGuest() << "         "
 								<< bookDupList.get(i).getSpecialRequest() << endl;
 						}
 						cout << "\nChoose which booking to check in (0 to exit): ";
@@ -192,6 +195,7 @@ int main() {
 	}
 }
 
+//Done by Chow Yun Cong
 void RetrieveRoomData(List& roomList) {
 	fstream file;
 	file.open("Rooms.csv");
@@ -218,6 +222,7 @@ void RetrieveRoomData(List& roomList) {
 	}
 }
 
+// Done by Chow Yun Cong
 void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
 	fstream file;
 	file.open("Bookings.csv");
@@ -276,6 +281,7 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& 
 
 		bookingData.add(guestName,Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		
+		// Done by Tan Jun Jie
 		// Add those with status "Booked" into queue
 		if (statusCode == 0)
 		{
@@ -307,6 +313,7 @@ tm convertStringToTM(string date)
 	return result;
 }
 
+// Done by Chow Yun Cong
 void AddBooking(Dictionary& bookingData) {
 	string input = "";
 	while (true) {
@@ -409,20 +416,6 @@ void AddBooking(Dictionary& bookingData) {
 	}
 }
 
-bool BookingQueueExist(Queue bookingQueue, Booking data)
-{
-	Booking temp;
-	while (!bookingQueue.isEmpty())
-	{
-		bookingQueue.dequeue(temp);
-		if (temp.getGuestName() == data.getGuestName()) {
-			return true;
-		}
-	}
-	return false;
-}
-
-
 void getCurrentDateTime(tm& tmDate) {
 	auto date = system_clock::now();
 	time_t t = system_clock::to_time_t(date);
@@ -431,6 +424,7 @@ void getCurrentDateTime(tm& tmDate) {
 	tmDate.tm_year += 1900;
 }
 
+// Done by Chow Yun Cong
 void AddToBookingCSV(Booking& booking) {
 	fstream file("Bookings.csv", ios::app);
 	tm nowTime;
