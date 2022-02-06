@@ -30,6 +30,8 @@ public:
 	// enqueue (add) item at the back of queue
 	bool enqueue(ItemType3 item);
 
+	bool enqueueCheckIn(ItemType3 item);
+
 	// dequeue (remove) item from front of queue
 	bool dequeue();
 

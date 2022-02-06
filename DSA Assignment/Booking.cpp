@@ -37,7 +37,7 @@ void Booking::setRoomType(string type) { roomType = type; }
 
 int Booking::getStatus() { return status; }
 
-void Booking::setStatus(int status) { status = status; }
+void Booking::setStatus(int s) { status = s; }
 
 tm Booking::getCheckInDate() { return checkInDate; }
 

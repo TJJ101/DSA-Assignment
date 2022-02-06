@@ -23,6 +23,7 @@ void getCurrentDateTime(tm& dateTime);
 void AddBooking(Dictionary& bookingData);
 void AddToBookingCSV(Booking& booking);
 void TmToString(string& date, tm tmDate);
+void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData);
 
 int main() {
 	List roomList;
@@ -44,6 +45,13 @@ int main() {
 		//To get current date as string
 		string cDate = "";
 		TmToString(cDate, currentDate);
+
+		checkInQueue.displayItems();
+		cout << "\n\n\n\n";
+
+
+		//checkout any person in checkin list if current day is passed the checkout date
+		CheckOut(checkInQueue, currentDate, bookingData);
 
 		cout << "\n==================================MENU=====================================" << endl;
 		cout << "|[1] Check in a guest using the booking information                       |" << endl;
@@ -82,105 +90,124 @@ int main() {
 				bookingData.GetBookedBookingsByName(name, bookDupList);
 				if (bookDupList.getLength() > 0) 
 				{
-					if (bookDupList.getLength() > 1)
+					int choice = 0;
+					cout << name << " currently has " << bookDupList.getLength() << " bookings.\n\n";
+					cout << "    Room Type                Check In       Check Out       Guest #       Special Requests    \n";
+					cout << "--------------------------------------------------------------------------------------\n";
+					for (int i = 0; i < bookDupList.getLength(); i++)
 					{
-						int choice = 0;
-						cout << name << " currently has " << bookDupList.getLength() << " bookings.\n\n";
-						cout << "    Room Type                Check In       Check Out       Guest #       Special Requests    \n";
-						cout << "--------------------------------------------------------------------------------------\n";
-						for (int i = 0; i < bookDupList.getLength(); i++)
+						string checkInDate = "";
+						string checkOutDate = "";
+						TmToString(checkInDate, bookDupList.get(i).getCheckInDate());
+						TmToString(checkOutDate, bookDupList.get(i).getCheckOutDate());
+						cout << i+1 << "   " << bookDupList.get(i).getRoomType() << "       " << checkInDate << "       " << checkOutDate
+							<< "       " << bookDupList.get(i).getNumofGuest() << "       "
+							<< bookDupList.get(i).getSpecialRequest() << endl;
+					}
+					cout << "\nChoose which booking to check in (0 to exit): ";
+					cin >> choice;
+					if (choice == 0)
+					{
+						cout << "Back to Main Menu\n";
+					}
+					else if (choice <= bookDupList.getLength())
+					{
+						Booking data = bookDupList.get(choice - 1);
+						struct tm temCheckInDate = data.getCheckInDate();
+						struct tm temCheckOutDate = data.getCheckOutDate();
+						struct tm temCurrentDate = currentDate;
+						tm* tempCheckInDate = &(temCheckInDate);
+						tm* tempCheckOutDate = &(temCheckOutDate);
+						tm* tempCurrentDate = &temCurrentDate;
+
+						tempCheckInDate->tm_year -= 1900;
+						tempCheckInDate->tm_mon -= 1;
+						tempCheckInDate->tm_hour = 0;
+						tempCheckInDate->tm_min = 0;
+						tempCheckInDate->tm_sec = 0;
+
+						tempCheckOutDate->tm_year -= 1900;
+						tempCheckOutDate->tm_mon -= 1;
+						tempCheckOutDate->tm_hour = 0;
+						tempCheckOutDate->tm_min = 0;
+						tempCheckOutDate->tm_sec = 0;
+
+						tempCurrentDate->tm_year -= 1900;
+						tempCurrentDate->tm_mon -= 1;
+
+						time_t tCheckInDate = mktime(tempCheckInDate);
+						time_t tCheckOutDate = mktime(tempCheckOutDate);
+						time_t tCurrentDate = mktime(tempCurrentDate);
+
+						if (difftime(tCheckInDate, tCurrentDate) <= 0)
 						{
-							string checkInDate = "";
-							string checkOutDate = "";
-							TmToString(checkInDate, bookDupList.get(i).getCheckInDate());
-							TmToString(checkOutDate, bookDupList.get(i).getCheckOutDate());
-							cout << i+1 << "   " << bookDupList.get(i).getRoomType() << "       " << checkInDate << "       " << checkOutDate
-								<< "       " << bookDupList.get(i).getNumofGuest() << "       "
-								<< bookDupList.get(i).getSpecialRequest() << endl;
-						}
-						cout << "\nChoose which booking to check in (0 to exit): ";
-						cin >> choice;
-						if (choice == 0)
-						{
-							cout << "Back to Main Menu\n";
-						}
-						else if (choice <= bookDupList.getLength())
-						{
-							Booking data = bookDupList.get(choice - 1);
-							struct tm temCheckInDate = data.getCheckInDate();
-							struct tm temCheckOutDate = data.getCheckOutDate();
-							struct tm temCurrentDate = currentDate;
-							tm* tempCheckInDate = &(temCheckInDate);
-							tm* tempCheckOutDate = &(temCheckOutDate);
-							tm* tempCurrentDate = &temCurrentDate;
-
-							tempCheckInDate->tm_year -= 1900;
-							tempCheckInDate->tm_mon -= 1;
-							tempCheckInDate->tm_hour = 0;
-							tempCheckInDate->tm_min = 0;
-							tempCheckInDate->tm_sec = 0;
-
-							tempCheckOutDate->tm_year -= 1900;
-							tempCheckOutDate->tm_mon -= 1;
-							tempCheckOutDate->tm_hour = 0;
-							tempCheckOutDate->tm_min = 0;
-							tempCheckOutDate->tm_sec = 0;
-
-							tempCurrentDate->tm_year -= 1900;
-							tempCurrentDate->tm_mon -= 1;
-
-							time_t tCheckInDate = mktime(tempCheckInDate);
-							time_t tCheckOutDate = mktime(tempCheckOutDate);
-							time_t tCurrentDate = mktime(tempCurrentDate);
-
-
-							if (difftime(tCheckInDate, tCurrentDate) <= 0)
+							if (difftime(tCheckOutDate, tCurrentDate) >= 0)
 							{
-								if (difftime(tCheckOutDate, tCurrentDate) >= 0)
+								List tempRoom = List();
+								bool roomTaken = false;
+								for (int i = 0; i < roomList.getLength(); i++)
+								{
+									if (roomList.get(i).getRoomType() == data.getRoomType())
+									{
+										tempRoom.add(roomList.get(i));
+									}
+								}
+								Queue tempQ = Queue();
+								int count = 0;
+								while (!checkInQueue.isEmpty())
+								{
+									Booking temp = Booking();
+									checkInQueue.dequeue(temp);
+									for (int i = 0; i < tempRoom.getLength(); i++)
+									{
+										if (temp.getRoomNo() == tempRoom.get(i).getRoomNo())
+										{
+											tempRoom.remove(i);
+										}
+									}
+								}
+								while (!tempQ.isEmpty())
+								{
+									Booking temp = Booking();
+									tempQ.dequeue(temp);
+									checkInQueue.enqueue(temp);
+								}
+								if (tempRoom.getLength() > 0)
 								{
 									data.setStatus(1);
+									data.setRoomNo(tempRoom.get(0).getRoomNo());
 									bool check = bookingData.ChangeValueOfBooking(data.getGuestName(), data);
 									checkInQueue.enqueue(data);
-									if (check) { cout << "Check in successful!\n"; }
+									if (check) { cout << "Check in successful!\n\n"; }
 									else { cout << "Check in failed!\n\n"; }
+									cout << "=======================================================CHECK IN LIST======================================================\n";
 									checkInQueue.displayItems();
-									cout << "\n\n\n";
-									bookingData.print();
+									cout << "==============================================================================================================================";
+									cout << "\n";
 									break;
-
 								}
 								else
 								{
-									cout << "Check in Failed.\n";
-									cout << "Check out date has passed.\n";
+									cout << "Sorry, currently all of our rooms are occupied.\n";
+									break;
 								}
+
+
 							}
 							else
 							{
-								cout << "Unable to check in.\n";
-								cout << "Check in date has not been reached.\n";
+								cout << "Check in Failed.\n";
+								cout << "Check out date has passed.\n";
 							}
+						}
+						else
+						{
+							cout << "Unable to check in.\n";
+							cout << "Check in date has not been reached.\n";
+						}
 							
-						}
-						else { cout << "Invalid Choice\n"; }
 					}
-					else
-					{
-						Booking booking = bookDupList.get(0);
-						if (booking.getStatus() == 2)
-						{
-							tm checkin = booking.getCheckInDate();
-							tm checkout = booking.getCheckOutDate();
-							cout << "Guest Name: " << booking.getGuestName() << endl;
-							cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
-							cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon << "/" << checkout.tm_year << endl;
-						}
-						else if (booking.getStatus() == 2)
-						{
-							cout << name << " currently has no booking.\n";
-							break;
-						}
-					}
+					else { cout << "Invalid Choice\n"; }
 				}
 				else { cout << name << " currently has no booking.\n"; }
 			}
@@ -208,6 +235,7 @@ int main() {
 			struct tm dateInput = convertStringToTM(strDate);
 			tm* tempDateInput = &dateInput;
 			tempDateInput->tm_year -= 1900;
+			tempDateInput->tm_mon -= 1;
 			tempDateInput->tm_hour = 0;
 			tempDateInput->tm_min = 0;
 			tempDateInput->tm_sec = 0;
@@ -215,12 +243,65 @@ int main() {
 			Queue tempQ = Queue();
 			Stack tempStack = Stack();
 
-			cout << "\nBooking Date       Guest Name       Room #       Room Type        Check in       Check out       Guests #       Special Requests\n";
-			cout << "------------------------------------------------------------------------------------------------------------------------------------\n";
+			cout << "\nBooking Date       Guest Name       Room #       Room Type           Status       Check in       Check out       Guests #       Special Requests\n";
+			cout << "-------------------------------------------------------------------------------------------------------------------------------------------------\n";
 			while (!checkedOutStack.isEmpty())
 			{
 				Booking temp = Booking();
+				checkedOutStack.pop(temp);
+				struct tm temCheckInDate = temp.getCheckInDate();
+				struct tm temCheckOutDate = temp.getCheckOutDate();
 
+				tm* tempCheckInDate = &(temCheckInDate);
+				tm* tempCheckOutDate = &(temCheckOutDate);
+
+				tempCheckInDate->tm_year -= 1900;
+				tempCheckInDate->tm_mon -= 1;
+				tempCheckInDate->tm_hour = 0;
+				tempCheckInDate->tm_min = 0;
+				tempCheckInDate->tm_sec = 0;
+
+				tempCheckOutDate->tm_year -= 1900;
+				tempCheckOutDate->tm_mon -= 1;
+				tempCheckOutDate->tm_hour = 0;
+				tempCheckOutDate->tm_min = 0;
+				tempCheckOutDate->tm_sec = 0;
+
+				time_t tCheckInDate = mktime(tempCheckInDate);
+				time_t tCheckOutDate = mktime(tempCheckOutDate);
+				time_t tDateInput = mktime(tempDateInput);
+
+				if (difftime(tCheckInDate, tDateInput) <= 0 && difftime(tCheckOutDate, tDateInput) >= 0)
+				{
+					string strDate = "";
+					TmToString(strDate, temp.getBookingDate());
+					cout << strDate << "           ";;
+					cout << temp.getGuestName() << "      ";
+					if (temp.getRoomNo() == -1)
+					{
+						cout << "          ";
+					}
+					else
+					{
+						cout << "Room " << temp.getRoomNo() << "   ";
+					}
+					cout << temp.getRoomType() << "    ";
+					if (temp.getStatus() == 0) { cout << "Checked Out       "; }
+					else if (temp.getStatus() == 1) { cout << "Checked In       "; }
+					else if (temp.getStatus() == 2) { cout << "Booked       "; }
+					cout << temp.getCheckInDate().tm_mday << "/" << temp.getCheckInDate().tm_mon << "/" << temp.getCheckInDate().tm_year << "       ";
+					cout << temp.getCheckOutDate().tm_mday << "/" << temp.getCheckOutDate().tm_mon << "/" << temp.getCheckOutDate().tm_year << "       ";
+					cout << temp.getNumofGuest() << "       ";
+					cout << temp.getSpecialRequest() << "       \n";
+					tempStack.push(temp);
+				}
+			}
+			while (!tempStack.isEmpty())
+			{
+				Booking temp = Booking();
+				tempStack.getTop(temp);
+				tempStack.pop();
+				checkedOutStack.push(temp);
 
 			}
 			while (!checkInQueue.isEmpty())
@@ -251,21 +332,22 @@ int main() {
 
 				if (difftime(tCheckInDate, tDateInput) <= 0 && difftime(tCheckOutDate, tDateInput) >= 0)
 				{
-					cout << temp.getBookingDate().tm_mday << "/" << temp.getBookingDate().tm_mon << "/" << temp.getBookingDate().tm_year << "       ";
-					cout << temp.getGuestName() << "       ";
+					string strDate = "";
+					TmToString(strDate, temp.getBookingDate());
+					cout << strDate << "            ";
+					cout << temp.getGuestName() << "      ";
 					if (temp.getRoomNo() == -1)
 					{
 						cout << "       ";
 					}
 					else
 					{
-						cout << "Room " << temp.getRoomNo() << "       ";
+						cout << "Room " << temp.getRoomNo() << "     ";
 					}
-					cout << temp.getRoomType() << "       ";
-					if (temp.getStatus() == 0) { cout << "Checked Out       \n"; }
-					else if (temp.getStatus() == 1) { cout << "Checked In       \n"; }
-					else if (temp.getStatus() == 2) { cout << "Booked       \n"; }
-					cout << temp.getStatus() << "       ";
+					cout << temp.getRoomType() << "     ";
+					if (temp.getStatus() == 0) { cout << "Checked Out       "; }
+					else if (temp.getStatus() == 1) { cout << "Checked In       "; }
+					else if (temp.getStatus() == 2) { cout << "Booked       "; }
 					cout << temp.getCheckInDate().tm_mday << "/" << temp.getCheckInDate().tm_mon << "/" << temp.getCheckInDate().tm_year << "       ";
 					cout << temp.getCheckOutDate().tm_mday << "/" << temp.getCheckOutDate().tm_mon << "/" << temp.getCheckOutDate().tm_year << "       ";
 					cout << temp.getNumofGuest() << "       ";
@@ -280,7 +362,6 @@ int main() {
 				tempQ.dequeue(temp);
 				checkInQueue.enqueue(temp);
 			}
-			
 			break;
 		}
 
@@ -559,14 +640,61 @@ void TmToString(string& date, tm tmDate) {
 	date = to_string(tmDate.tm_mday) + "/" + to_string(tmDate.tm_mon) + "/" + to_string(tmDate.tm_year);
 }
 
-/*
-ListBooking FindGuestStayingAtDate(tm Date)
+
+void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData)
 {
-	ListBooking guestList = ListBooking();
+	Queue tempQ = Queue();
+	Queue checkOutQ = Queue();
+	while (!checkInQueue.isEmpty())
+	{
+		Booking data = Booking();
+		checkInQueue.dequeue(data);
+		struct tm temCheckOutDate = data.getCheckOutDate();
+		struct tm temCurrentDate = currentDate;
+		tm* tempCheckOutDate = &(temCheckOutDate);
+		tm* tempCurrentDate = &temCurrentDate;
+
+		tempCheckOutDate->tm_year -= 1900;
+		tempCheckOutDate->tm_mon -= 1;
+		tempCheckOutDate->tm_hour = 0;
+		tempCheckOutDate->tm_min = 0;
+		tempCheckOutDate->tm_sec = 0;
+
+		tempCurrentDate->tm_year -= 1900;
+		tempCurrentDate->tm_mon -= 1;
+		tempCurrentDate->tm_hour = 0;
+		tempCurrentDate->tm_min = 0;
+		tempCurrentDate->tm_sec = 0;
+
+		time_t tCheckOutDate = mktime(tempCheckOutDate);
+		time_t tCurrentDate = mktime(tempCurrentDate);
 
 
+		if (difftime(tCheckOutDate, tCurrentDate) < 0)
+		{
+			//Set Chackout status for Booking
+			data.setStatus(0);
+			bookingData.ChangeValueOfBooking(data.getGuestName(), data);
+			checkOutQ.enqueue(data);
+			cout << data.getGuestName() << "has checked out\n";
+		}
 
+		tempQ.enqueue(data);
+	}
+	while (!tempQ.isEmpty())
+	{
+		Booking temp = Booking();
+		tempQ.dequeue(temp);
+		if(temp.getStatus() == 1) { checkInQueue.enqueue(temp); }
+	}
+	cout << "\n";
+	if (!checkOutQ.isEmpty()) 
+	{ 
+		cout << "==================================DAILY CHECK OUT=====================================\n";
+		checkOutQ.displayItems(); 
+		cout << "======================================================================================\n";
+	}
+	cout << "\n\n";
 }
-*/
 
 

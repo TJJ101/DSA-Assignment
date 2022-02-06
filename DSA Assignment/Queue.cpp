@@ -32,6 +32,109 @@ bool Queue::enqueue(ItemType3 item)
 	return true;
 }
 
+// enqueue (add) item at the back of queue based on Check In date
+bool Queue::enqueueCheckIn(ItemType3 data)
+{
+	// create new node
+	Node* temp = new Node();
+	temp->item = data;
+	temp->next = NULL;
+	Queue tempQ = Queue();
+
+	if (isEmpty())
+	{
+		enqueue(data);
+	}
+	else
+	{
+		struct tm temCheckInDate = frontNode->item.getCheckInDate();
+		struct tm temInputtedDate = temp->item.getCheckInDate();
+		tm* tempCheckInDate = &(temCheckInDate);
+		tm* tempInputtedDate = &temInputtedDate;
+
+		tempCheckInDate->tm_year -= 1900;
+		tempCheckInDate->tm_mon -= 1;
+		tempCheckInDate->tm_hour = 0;
+		tempCheckInDate->tm_min = 0;
+		tempCheckInDate->tm_sec = 0;
+
+		tempInputtedDate->tm_year -= 1900;
+		tempInputtedDate->tm_mon -= 1;
+		tempInputtedDate->tm_hour = 0;
+		tempInputtedDate->tm_min = 0;
+		tempInputtedDate->tm_sec = 0;
+
+		time_t tCheckInDate = mktime(tempCheckInDate);
+		time_t tInputtedDate = mktime(tempInputtedDate);
+
+		if (difftime(tCheckInDate, tInputtedDate) > 0)
+		{
+			backNode->next = temp;
+		}
+		else
+		{
+			while (!isEmpty())
+			{
+				Booking temp2 = Booking();
+				dequeue(temp2);
+				tempQ.enqueue(temp2);
+			}
+			while(!tempQ.isEmpty())
+			{
+				Booking temp2 = Booking();
+				struct tm temCHECKDATE = tempQ.frontNode->item.getCheckInDate();
+				tm* tempCHECKDATE = &temCHECKDATE;
+
+				tempCHECKDATE->tm_year -= 1900;
+				tempCHECKDATE->tm_mon -= 1;
+				tempCHECKDATE->tm_hour = 0;
+				tempCHECKDATE->tm_min = 0;
+				tempCHECKDATE->tm_sec = 0;
+
+				time_t tCHECKDATE = mktime(tempCHECKDATE);
+				if (difftime(tCHECKDATE, tInputtedDate) >= 0) { enqueue(temp->item);}
+				tempQ.dequeue(temp2);
+				enqueue(temp2);
+				/*
+				if (isEmpty())
+				{
+					enqueue(temp2);
+				}
+				else
+				{
+					struct tm temCheckInDate = temp2.getCheckInDate();
+					tm* tempCheckInDate = &(temCheckInDate);
+
+					tempCheckInDate->tm_year -= 1900;
+					tempCheckInDate->tm_mon -= 1;
+					tempCheckInDate->tm_hour = 0;
+					tempCheckInDate->tm_min = 0;
+					tempCheckInDate->tm_sec = 0;
+
+					time_t tCheckInDate = mktime(tempCheckInDate);
+					time_t tInputtedDate = mktime(tempInputtedDate);
+
+					if (difftime(tCheckInDate, tInputtedDate) < 0)
+					{
+						enqueue(temp2);
+					}
+					else
+					{
+
+					}
+				}
+				*/
+			}
+
+		}
+		// set back node's next pointer to point to new node
+		backNode->next = temp;
+	}
+	// set back node (pointer) to point to new node
+	backNode = temp;
+	return true;
+}
+
 // dequeue (remove) item from front of queue
 bool Queue::dequeue() 
 {
@@ -91,13 +194,13 @@ bool Queue::isEmpty()
 // display items in queue from front to back
 void Queue::displayItems() 
 {
-	cout << "Id       Booking Date       Guest Name       Room #       Room Type       Status       Check in       Check out       Guests #       Special Requests\n";
+	cout << "Id     Booking Date       Guest Name       Room #       Room Type           Status       Check in       Check out       Guests #       Special Requests\n";
 	cout << "-------------------------------------------------------------------------------------------------------------------------------------------------------------\n";
 	if (!isEmpty()) // check if check is emepty
 	{
 		if (frontNode == backNode) // if there is only 1 item in queue
 		{
-			cout << frontNode->item.getID() << "       ";
+			cout << frontNode->item.getID() << "    ";
 			cout << frontNode->item.getBookingDate().tm_mday << "/" << frontNode->item.getBookingDate().tm_mon << "/" << frontNode->item.getBookingDate().tm_year << "       ";
 			cout << frontNode->item.getGuestName() << "       ";
 			if (frontNode->item.getRoomNo() == -1)
@@ -108,7 +211,7 @@ void Queue::displayItems()
 			{
 				cout << "Room " << frontNode->item.getRoomNo() << "       ";
 			}
-			cout << frontNode->item.getRoomType() << "       ";
+			cout << frontNode->item.getRoomType() << "           ";
 			if (frontNode->item.getStatus() == 0) { cout << "Checked Out       "; }
 			else if (frontNode->item.getStatus() == 1) { cout << "Checked In       "; }
 			else if (frontNode->item.getStatus() == 2) { cout << "Booked       "; }
@@ -122,7 +225,7 @@ void Queue::displayItems()
 			Node* temp = frontNode;
 			while (temp != NULL)
 			{
-				cout << temp->item.getID() << "       ";
+				cout << temp->item.getID() << "  ";
 				cout << temp->item.getBookingDate().tm_mday << "/" << temp->item.getBookingDate().tm_mon << "/" << temp->item.getBookingDate().tm_year << "       ";
 				cout << temp->item.getGuestName() << "       ";
 				if (temp->item.getRoomNo() == -1) { cout << "-       "; }
@@ -130,7 +233,7 @@ void Queue::displayItems()
 				{
 					cout << "Room " << temp->item.getRoomNo() << "       ";
 				}
-				cout << temp->item.getRoomType() << "       ";
+				cout << temp->item.getRoomType() << "          ";
 				if (temp->item.getStatus() == 0) { cout << "Checked Out       "; }
 				else if (temp->item.getStatus() == 1) { cout << "Checked In       "; }
 				else if (temp->item.getStatus() == 2) { cout << "Booked       "; }
