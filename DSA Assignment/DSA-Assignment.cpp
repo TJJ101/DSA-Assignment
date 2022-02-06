@@ -15,6 +15,8 @@ using namespace std::chrono;
 void RetrieveRoomData(List& roomList);
 void RetrieveBookingData(Dictionary& bookingData);
 tm convertStringToTM(string date);
+void getCurrentDateTime(tm& dateTime);
+void AddBooking();
 
 int main() {
 	List roomList;
@@ -23,15 +25,11 @@ int main() {
 	RetrieveRoomData(roomList);
 	RetrieveBookingData(bookingData);
 
-	// to set current date
+	// to set current date----------------------------------
 	tm currentDate;
-	auto date = system_clock::now();
+	getCurrentDateTime(currentDate);
+	//----------------------------------------------------
 
-	time_t t = system_clock::to_time_t(date);
-	localtime_s(&currentDate,&t);
-	currentDate.tm_mon += 1;
-	currentDate.tm_year += 1900;
-	cout << "Current Date: " << currentDate.tm_mday << "/" << currentDate.tm_mon<< "/" <<currentDate.tm_year << endl;
 
 	int option = -1;
 	while (option != 0) {
@@ -213,5 +211,25 @@ tm convertStringToTM(string date) {
 	sscanf_s(arr, "%d/%d/%4d  %d:%d:%d",
 		&result.tm_mday, &result.tm_mon, &result.tm_year, &result.tm_hour, &result.tm_min, &result.tm_sec);
 	return result;
+}
+
+//void AddBooking(Dictionary* bookingData) {
+//	string input = "";
+//	while (!input._Equal("0")) {
+//		cout << "Please enter your name: ";
+//		cin >> input;
+//		cin.ignore();
+//		while (!input._Equal("0")) {
+//
+//		}
+//	}
+//}
+
+void getCurrentDateTime(tm& tmDate) {
+	auto date = system_clock::now();
+	time_t t = system_clock::to_time_t(date);
+	localtime_s(&tmDate, &t);
+	tmDate.tm_mon += 1;
+	tmDate.tm_year += 1900;
 }
 
