@@ -17,7 +17,7 @@ using namespace std::chrono;
 void RetrieveRoomData(List& roomList);
 void RetrieveBookingData(Dictionary& bookingData, Stack& bookedOutStack, Queue& bookingQueue, Queue& checkedInQueue);
 tm convertStringToTM(string date);
-bool SearchBookingQueue(Queue bookingQueue, Booking data);
+bool BookingQueueExist(Queue bookingQueue, Booking data);
 
 int main() {
 	List roomList;
@@ -36,6 +36,9 @@ int main() {
 	localtime_s(&currentDate,&t);
 	currentDate.tm_mon += 1;
 	currentDate.tm_year += 1900;
+	
+	bookingQueue.displayItems();
+	cout << "\n\n";
 
 	int option = -1;
 	while (option != 0) {
@@ -69,49 +72,16 @@ int main() {
 			getline(cin, name);
 			if (!name.empty()) {
 				Booking booking = bookingData.get(name);
-				if (booking.getGuestName() != name || !SearchBookingQueue(bookingQueue, booking))
+				cout << BookingQueueExist(bookingQueue, booking) << endl;
+				if (booking.getGuestName() != name)
 				{
-					string strChoice = "";
-					int choice = -1;
 					cout << name << " currently has no booking.\n";
-					while (choice != 0)
-					{
-						cout << "Do you want to make a new booking? (Y/N): ";
-						cin >> strChoice;
-						if (strChoice == "Y") { choice = 1; }
-						else if (strChoice == "N") { choice = 0; }
-						else { choice = -1; }
-						
-						switch (choice)
-						{
-						default:
-							cout << "\nPlease enter a valid option!\n";
-							break;
-						case 0:
-							// Exit
-							cout << "\nBack to Main Menu\n";
-							break;
-						case 1:
-						{
-							string strDate;
-							tm checkInDate;
-							tm checkOutDate;
-							cout << "Enter a name: ";
-							cin.ignore();
-							getline(cin, name);
-
-							cout << "\nEnter Check in Date (e.g 30/1/2022): ";
-							cin >> strDate;
-							checkInDate = convertStringToTM(strDate);
-
-							cout << "\nEnter Check out Date (e.g 30/1/2022): ";
-							cin >> strDate;
-							checkOutDate = convertStringToTM(strDate);
-
-							break;
-						}
-						}
-					}
+					break;
+				}
+				else if (BookingQueueExist(bookingQueue, booking) != true)
+				{
+					cout << name << " currently has no booking.\n";
+					break;
 				}
 				else
 				{
@@ -289,7 +259,7 @@ tm convertStringToTM(string date)
 	return result;
 }
 
-bool SearchBookingQueue(Queue bookingQueue, Booking data)
+bool BookingQueueExist(Queue bookingQueue, Booking data)
 {
 	Booking temp;
 	while (!bookingQueue.isEmpty())
@@ -299,6 +269,6 @@ bool SearchBookingQueue(Queue bookingQueue, Booking data)
 			return true;
 		}
 	}
-	false;
+	return false;
 }
 
