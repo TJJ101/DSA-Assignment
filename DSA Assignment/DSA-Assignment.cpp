@@ -38,6 +38,10 @@ int main() {
 	bookingQueue.displayItems();
 	cout << "\n\n";
 
+	Booking data;
+	bookingQueue.getFront(data);
+	cout << data.getGuestName() << "\n\n";
+
 	int option = -1;
 	while (option != 0) {
 		cout << "\n==================================MENU=====================================" << endl;
@@ -66,28 +70,28 @@ int main() {
 		{
 			string name;
 			cout << "Enter a name: ";
+			cin.clear();
 			cin.ignore();
 			getline(cin, name);
 			if (!name.empty()) {
 				Booking booking = bookingData.get(name);
-				cout << BookingQueueExist(bookingQueue, booking) << endl;
 				if (booking.getGuestName() != name)
 				{
 					cout << name << " currently has no booking.\n";
 					break;
 				}
-				else if (BookingQueueExist(bookingQueue, booking) != true)
-				{
-					cout << name << " currently has no booking.\n";
-					break;
-				}
-				else
+				else if (booking.getStatus() ==2)
 				{
 					tm checkin = booking.getCheckInDate();
 					tm checkout = booking.getCheckOutDate();
 					cout << "Guest Name: " << booking.getGuestName() << endl;
 					cout << "Checkin: " << checkin.tm_mday << "/" << checkin.tm_mon << "/" << checkin.tm_year << endl;
-					cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon<< "/" << checkout.tm_year << endl;
+					cout << "Checkin: " << checkout.tm_mday << "/" << checkout.tm_mon << "/" << checkout.tm_year << endl;
+				}
+				else
+				{
+					cout << name << " currently has no booking.\n";
+					break;
 				}
 				
 			}
@@ -255,19 +259,6 @@ tm convertStringToTM(string date)
 	sscanf_s(arr, "%d/%d/%4d  %d:%d:%d",
 		&result.tm_mday, &result.tm_mon, &result.tm_year, &result.tm_hour, &result.tm_min, &result.tm_sec);
 	return result;
-}
-
-bool BookingQueueExist(Queue bookingQueue, Booking data)
-{
-	Booking temp;
-	while (!bookingQueue.isEmpty())
-	{
-		bookingQueue.dequeue(temp);
-		if (temp.getGuestName() == data.getGuestName()) {
-			return true;
-		}
-	}
-	return false;
 }
 
 //void AddBooking(Dictionary* bookingData) {
