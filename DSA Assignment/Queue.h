@@ -30,6 +30,10 @@ public:
 	// enqueue (add) item at the back of queue
 	bool enqueue(ItemType3 item);
 
+	// enqueue(add) item at the back of queue based on check in date
+	bool enqueueBooking(ItemType3 item);
+
+	// enqueue (add) item at the back of queue based on check out date
 	bool enqueueCheckIn(ItemType3 item);
 
 	// dequeue (remove) item from front of queue

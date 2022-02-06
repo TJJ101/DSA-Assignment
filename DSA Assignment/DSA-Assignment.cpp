@@ -48,7 +48,7 @@ int main() {
 		TmToString(cDate, currentDate);
 
 		//checkout any person in checkin list if current day is passed the checkout date
-		CheckOut(checkInQueue, currentDate, bookingData);
+		//CheckOut(checkInQueue, currentDate, bookingData);
 
 		cout << "\n==================================MENU=====================================" << endl;
 		cout << "|[1] Check in a guest using the booking information                       |" << endl;
@@ -181,8 +181,7 @@ int main() {
 									data.setRoomNo(tempRoom.get(0).getRoomNo());
 									bool check = bookingData.ChangeValueOfBooking(data.getGuestName(), data);
 									if (check) 
-									{ 
-										//checkInQueue.enqueue(data);
+									{
 										checkInQueue.enqueueCheckIn(data);
 										cout << "Check in successful!\n\n"; 
 									}
@@ -493,16 +492,17 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue&
 		bookingData.add(guestName,Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		
 		// Done by Tan Jun Jie
+		//Add those with status "Check out" into checkedOutStack
 		if (statusCode == 0)
 		{
 			checkedOutStack.push(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		}
-		// Add those with status "Booked" into queue
+		// Add those with status "Booked" into bookingQueue
 		else if (statusCode == 2) 
 		{
-			bookingQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+			bookingQueue.enqueueBooking(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		}
-		// AAdd Those with status "Checked In" into queue
+		// AAdd Those with status "Checked In" into checkedInQueue
 		else if (statusCode == 1)
 		{
 			checkedInQueue.enqueueCheckIn(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
