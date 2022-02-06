@@ -107,57 +107,41 @@ int main() {
 						}
 						else if (choice <= bookDupList.getLength())
 						{
-							Booking temp = bookDupList.get(choice - 1);
-							
-							//Check if current date is equal or greater than check in date
-							if ((temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_year >= currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon == currentDate.tm_mon && temp.getCheckInDate().tm_year == currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_mday == currentDate.tm_mday && temp.getCheckInDate().tm_year == currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_year >= currentDate.tm_year && temp.getCheckInDate().tm_mday == currentDate.tm_mday && temp.getCheckInDate().tm_mon == currentDate.tm_mon)
-								|| (temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_year == currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon == currentDate.tm_mon && temp.getCheckInDate().tm_year >= currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mday == currentDate.tm_mday && temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_year >= currentDate.tm_year))
-							{
-								// check if current date is equal or smaller than check out date
-								if ((temp.getCheckOutDate().tm_mday < currentDate.tm_mday && temp.getCheckOutDate().tm_mon < currentDate.tm_mon && temp.getCheckOutDate().tm_year < currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mday < currentDate.tm_mday && temp.getCheckOutDate().tm_mon == currentDate.tm_mon && temp.getCheckOutDate().tm_year == currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mon < currentDate.tm_mon && temp.getCheckOutDate().tm_mday == currentDate.tm_mday && temp.getCheckOutDate().tm_year == currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_year < currentDate.tm_year && temp.getCheckOutDate().tm_mday == currentDate.tm_mday && temp.getCheckOutDate().tm_mon == currentDate.tm_mon)
-									|| (temp.getCheckOutDate().tm_mday < currentDate.tm_mday && temp.getCheckOutDate().tm_mon < currentDate.tm_mon && temp.getCheckOutDate().tm_year == currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mday < currentDate.tm_mday && temp.getCheckOutDate().tm_mon == currentDate.tm_mon && temp.getCheckOutDate().tm_year < currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mday < currentDate.tm_mday && temp.getCheckOutDate().tm_mon < currentDate.tm_mon && temp.getCheckOutDate().tm_year < currentDate.tm_year))
-								{
+							Booking data = bookDupList.get(choice - 1);
+							struct tm temCheckInDate = data.getCheckInDate();
+							struct tm temCheckOutDate = data.getCheckOutDate();
+							struct tm temCurrentDate = currentDate;
+							tm* tempCheckInDate = &(temCheckInDate);
+							tm* tempCheckOutDate = &(temCheckOutDate);
+							tm* tempCurrentDate = &temCurrentDate;
 
-								}
-								else { cout << "Can't check in. You have passed your check out date.\n"; }
-							}
-							else { cout << "Can't check in. Check in date for booking has not been reached yet.\n"; }
-							
-							/*
-							//Check if current date is equal or greater than check in date
-							if ((temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_year >= currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon == currentDate.tm_mon && temp.getCheckInDate().tm_year == currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_mday == currentDate.tm_mday && temp.getCheckInDate().tm_year == currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_year >= currentDate.tm_year && temp.getCheckInDate().tm_mday == currentDate.tm_mday && temp.getCheckInDate().tm_mon == currentDate.tm_mon)
-								|| (temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_year == currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mday >= currentDate.tm_mday && temp.getCheckInDate().tm_mon == currentDate.tm_mon && temp.getCheckInDate().tm_year >= currentDate.tm_year)
-								|| (temp.getCheckInDate().tm_mday == currentDate.tm_mday && temp.getCheckInDate().tm_mon >= currentDate.tm_mon && temp.getCheckInDate().tm_year >= currentDate.tm_year))
-							{
-								// check if current date is equal or smaller than check out date
-								if ((temp.getCheckOutDate().tm_mday <= currentDate.tm_mday && temp.getCheckOutDate().tm_mon <= currentDate.tm_mon && temp.getCheckOutDate().tm_year <= currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mday <= currentDate.tm_mday && temp.getCheckOutDate().tm_mon == currentDate.tm_mon && temp.getCheckOutDate().tm_year == currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mon <= currentDate.tm_mon && temp.getCheckOutDate().tm_mday == currentDate.tm_mday && temp.getCheckOutDate().tm_year == currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_year <= currentDate.tm_year && temp.getCheckOutDate().tm_mday == currentDate.tm_mday && temp.getCheckOutDate().tm_mon == currentDate.tm_mon)
-									|| (temp.getCheckOutDate().tm_mday <= currentDate.tm_mday && temp.getCheckOutDate().tm_mon <= currentDate.tm_mon && temp.getCheckOutDate().tm_year == currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mday <= currentDate.tm_mday && temp.getCheckOutDate().tm_mon == currentDate.tm_mon && temp.getCheckOutDate().tm_year <= currentDate.tm_year)
-									|| (temp.getCheckOutDate().tm_mday <= currentDate.tm_mday && temp.getCheckOutDate().tm_mon <= currentDate.tm_mon && temp.getCheckOutDate().tm_year <= currentDate.tm_year))
-								{
+							tempCheckInDate->tm_year -= 1900;
+							tempCheckInDate->tm_mon -= 1;
+							tempCheckInDate->tm_hour = 0;
+							tempCheckInDate->tm_min = 0;
+							tempCheckInDate->tm_sec = 0;
 
-								}
-								else { cout << "Can't Check in. You have passed your check out date.\n"; }
-							}
-							else { cout << "Can't check in. Check In date for booking has not been reached yet.\n"; }
-							*/
+							tempCheckOutDate->tm_year -= 1900;
+							tempCheckOutDate->tm_mon -= 1;
+							tempCheckOutDate->tm_hour = 0;
+							tempCheckOutDate->tm_min = 0;
+							tempCheckOutDate->tm_sec = 0;
+
+							tempCurrentDate->tm_year -= 1900;
+							tempCurrentDate->tm_mon -= 1;
+
+							time_t tCheckInDate = mktime(tempCheckInDate);
+							time_t tCheckOutDate = mktime(tempCheckOutDate);
+							time_t tCurrentDate = mktime(tempCurrentDate);
+
+
+							cout << "time_t of Check In Date: " << tCheckInDate << endl;
+							cout << "time_t of Check Out Date: " << tCheckOutDate << endl;
+							cout << "time_t of Current Date: " << tCurrentDate << endl;
+							cout << difftime(tCheckInDate, tCurrentDate) << endl;
+
+							
+							
 						}
 						else { cout << "Invalid Choice\n"; }
 					}
@@ -191,29 +175,22 @@ int main() {
 			break;
 		}
 		case 2:
-			// Add and save a new booking for the hotel   
+			// Add and save a new booking for the hotel
 			AddBooking(bookingData);
 			break;
 
 		case 3:
 			//Display guests staying in the hotel on a particular date
+			// Done by Tan Jun Jie S10194152D
 		{
-			string date;
-			string delimiter = "/";
-
+			string strDate;
 			cout << "Enter a date(e.g. 1/1/2002): ";
-			cin >> date;
-			string date2 = date;
-			string day = date2.substr(0, date2.find(delimiter));
-			date2.erase(0, date2.find(delimiter) + delimiter.length());
-			string month = date2.substr(0, date2.find(delimiter));
-			date2.erase(0, date2.find(delimiter) + delimiter.length());
-			string year = date2.substr(0, date2.find(delimiter));
-			date2.erase(0, date2.find(delimiter) + delimiter.length());
+			cin >> strDate;
+			tm dateInput = convertStringToTM(strDate);
 
-			cout << "Day: " << day;
-			cout << "Month: " << month;
-			cout << "Year: " << year;
+			cout << "Day: " << dateInput.tm_mday << endl;
+			cout << "Month: " << dateInput.tm_mon << endl;
+			cout << "Year: " << dateInput.tm_year << endl;
 			break;
 		}
 
@@ -491,5 +468,15 @@ void AddToBookingCSV(Booking& booking) {
 void TmToString(string& date, tm tmDate) {
 	date = to_string(tmDate.tm_mday) + "/" + to_string(tmDate.tm_mon) + "/" + to_string(tmDate.tm_year);
 }
+
+/*
+ListBooking FindGuestStayingAtDate(tm Date)
+{
+	ListBooking guestList = ListBooking();
+
+
+
+}
+*/
 
 
