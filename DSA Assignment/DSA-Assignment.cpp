@@ -499,9 +499,10 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue&
 		{
 			bookingQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		}
+		// AAdd Those with status "Checked In" into queue
 		else if (statusCode == 1)
 		{
-			checkedInQueue.enqueue(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
+			checkedInQueue.enqueueCheckIn(Booking(bookingID, bookingDate, guestName, roomNo, roomType, statusCode, checkInDate, checkOutDate, guestAmt, specialRequest));
 		}
 	}
 
@@ -695,7 +696,6 @@ void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData)
 			data.setStatus(0);
 			bookingData.ChangeValueOfBooking(data.getGuestName(), data);
 			checkOutQ.enqueue(data);
-			cout << data.getGuestName() << "has checked out\n";
 		}
 
 		tempQ.enqueue(data);
@@ -715,6 +715,7 @@ void CheckOut(Queue& checkInQueue, tm currentDate, Dictionary& bookingData)
 	}
 	cout << "\n\n";
 }
+
 //params dictionary: the booking data
 //Gets all occupied room in a month
 void DisplayOccupiedRoomByMonth(Dictionary& bookingData) {

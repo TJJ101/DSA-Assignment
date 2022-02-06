@@ -47,8 +47,8 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 	}
 	else
 	{
-		struct tm temCheckInDate = frontNode->item.getCheckInDate();
-		struct tm temInputtedDate = temp->item.getCheckInDate();
+		struct tm temCheckInDate = backNode->item.getCheckInDate();
+		struct tm temInputtedDate = data.getCheckInDate();
 		tm* tempCheckInDate = &(temCheckInDate);
 		tm* tempInputtedDate = &temInputtedDate;
 
@@ -67,20 +67,35 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 		time_t tCheckInDate = mktime(tempCheckInDate);
 		time_t tInputtedDate = mktime(tempInputtedDate);
 
-		if (difftime(tCheckInDate, tInputtedDate) > 0)
+		if (difftime(tCheckInDate, tInputtedDate) <= 0)
 		{
-			backNode->next = temp;
+			enqueue(data);
 		}
 		else
 		{
 			while (!isEmpty())
 			{
 				Booking temp2 = Booking();
+				struct tm temCHECKDATE = frontNode->item.getCheckInDate();
+				tm* tempCHECKDATE = &temCHECKDATE;
+
+				tempCHECKDATE->tm_year -= 1900;
+				tempCHECKDATE->tm_mon -= 1;
+				tempCHECKDATE->tm_hour = 0;
+				tempCHECKDATE->tm_min = 0;
+				tempCHECKDATE->tm_sec = 0;
+
+				time_t tCHECKDATE = mktime(tempCHECKDATE);
+				if (difftime(tCHECKDATE, tInputtedDate) <= 0) { tempQ.enqueue(data); }
 				dequeue(temp2);
 				tempQ.enqueue(temp2);
 			}
 			while(!tempQ.isEmpty())
 			{
+				Booking temp2 = Booking();
+				tempQ.dequeue(temp2);
+				enqueue(temp2);
+				/*
 				Booking temp2 = Booking();
 				struct tm temCHECKDATE = tempQ.frontNode->item.getCheckInDate();
 				tm* tempCHECKDATE = &temCHECKDATE;
@@ -95,6 +110,7 @@ bool Queue::enqueueCheckIn(ItemType3 data)
 				if (difftime(tCHECKDATE, tInputtedDate) >= 0) { enqueue(temp->item);}
 				tempQ.dequeue(temp2);
 				enqueue(temp2);
+				*/
 				/*
 				if (isEmpty())
 				{
