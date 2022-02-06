@@ -248,16 +248,16 @@ void Dictionary::GetBookedBookingsByName(string name, ListBooking& list) {
 		// if first node is the correct one
 		if (currentNode->item.getStatus() == 2)
 			// checked is booked or not
-			list.add(currentNode->item);
+			list.add(&currentNode->item);
 		//check if have more bookings under this person
 		if (currentNode->altNode != NULL) {
 			currentNode = currentNode->altNode;
 			if (currentNode->item.getStatus() == 2)
-				list.add(currentNode->item);
+				list.add(&currentNode->item);
 			while (currentNode->next != NULL) {
 				currentNode = currentNode->next;
 				if (currentNode->item.getStatus() == 2)
-					list.add(currentNode->item);
+					list.add(&currentNode->item);
 			}
 		}
 	}
@@ -271,16 +271,16 @@ void Dictionary::GetBookedBookingsByName(string name, ListBooking& list) {
 			// if first node is the correct one
 			if (currentNode->item.getStatus() == 2)
 				// checked is booked or not
-				list.add(currentNode->item);
+				list.add(&currentNode->item);
 			//check if have more bookings under this person
 			if (currentNode->altNode != NULL) {
 				currentNode = currentNode->altNode;
 				if (currentNode->item.getStatus() == 2)
-					list.add(currentNode->item);
+					list.add(&currentNode->item);
 				while (currentNode->next != NULL) {
 					currentNode = currentNode->next;
 					if (currentNode->item.getStatus() == 2)
-						list.add(currentNode->item);
+						list.add(&currentNode->item);
 				}
 			}
 		}
