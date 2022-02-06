@@ -26,7 +26,6 @@ void TmToString(string& date, tm tmDate);
 
 int main() {
 	List roomList;
-	ListBooking bookDupList = ListBooking();
 	Dictionary bookingData;
 	Stack bookedOutStack;
 	Queue bookingQueue;
@@ -78,6 +77,7 @@ int main() {
 			cin.ignore();
 			getline(cin, name);
 			Booking booking = bookingData.get(name);
+			ListBooking bookDupList;
 			if (booking.getGuestName() == name) 
 			{
 				bookingData.GetBookedBookingsByName(name, bookDupList);
@@ -117,10 +117,6 @@ int main() {
 			}
 
 			// CLear the Booking Duplicate List
-			for (int i = 0; i < bookDupList.getLength(); i++)
-			{
-				bookDupList.remove(i);
-			}
 			break;
 		}
 		case 2:
