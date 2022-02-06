@@ -310,6 +310,7 @@ int main() {
 }
 
 //Done by Chow Yun Cong
+//Retrieving Room Data from Rooms.csv
 void RetrieveRoomData(List& roomList) {
 	fstream file;
 	file.open("Rooms.csv");
@@ -337,6 +338,7 @@ void RetrieveRoomData(List& roomList) {
 }
 
 // Done by Chow Yun Cong
+//Retrieving booking data from Bookings.csv
 void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue& bookingQueue,Queue& checkedInQueue) {
 	fstream file;
 	file.open("Bookings.csv");
@@ -416,6 +418,7 @@ void RetrieveBookingData(Dictionary& bookingData, Stack& checkedOutStack, Queue&
 }
 
 //Done by Yun Cong
+//convert string to tm
 tm convertStringToTM(string date) 
 {
 	tm result;
@@ -429,6 +432,7 @@ tm convertStringToTM(string date)
 }
 
 // Done by Chow Yun Cong
+//Adds and save a new booking
 void AddBooking(Dictionary& bookingData) {
 	string input = "";
 	while (true) {
@@ -531,6 +535,7 @@ void AddBooking(Dictionary& bookingData) {
 	}
 }
 
+//gets the current date time in tm format
 void getCurrentDateTime(tm& tmDate) {
 	auto date = system_clock::now();
 	time_t t = system_clock::to_time_t(date);
@@ -540,6 +545,7 @@ void getCurrentDateTime(tm& tmDate) {
 }
 
 // Done by Chow Yun Cong
+//Appends new Booking data to Bookings.csv
 void AddToBookingCSV(Booking& booking) {
 	fstream file("Bookings.csv", ios::app);
 	tm nowTime;
@@ -558,10 +564,13 @@ void AddToBookingCSV(Booking& booking) {
 	file.close();
 }
 
+//converts tm to string
 void TmToString(string& date, tm tmDate) {
 	date = to_string(tmDate.tm_mday) + "/" + to_string(tmDate.tm_mon) + "/" + to_string(tmDate.tm_year);
 }
 
+//params dictionary: the booking data
+//Gets all occupied room in a month
 void DisplayOccupiedRoomByMonth(Dictionary& bookingData) {
 	while (true) {
 		int monthNo;
