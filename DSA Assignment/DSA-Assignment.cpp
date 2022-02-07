@@ -48,7 +48,7 @@ int main() {
 		TmToString(cDate, currentDate);
 
 		//checkout any person in checkin list if current day is passed the checkout date
-		//CheckOut(checkInQueue, currentDate, bookingData);
+		CheckOut(checkInQueue, currentDate, bookingData);
 
 		cout << "\n==================================MENU=====================================" << endl;
 		cout << "|[1] Check in a guest using the booking information                       |" << endl;
